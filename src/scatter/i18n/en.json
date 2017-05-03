@@ -1,0 +1,11 @@
+{
+	"en": {
+		"scatter": {
+			"alt": "Old Faithful Eruptions",
+			"x_label": "Eruption Duration (Min)",
+			"y_label": "Waiting Time Between Eruptions(Min)",
+			"z_label": "Eruption Number",
+			"datatableTitle": "Data table: Old Faithful Eruptions"
+		}
+	}
+}

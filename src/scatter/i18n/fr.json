@@ -1,0 +1,11 @@
+{
+	"fr": {
+		"scatter": {
+			"alt": "Éruptions du Geyser Old Faithful",
+			"x_label": "Durée de l'éruption (Min)",
+			"y_label": "Temps d'attente entre les éruptions",
+			"z_label": "Numéro de l'éruption",
+			"datatableTitle": "Tableau de données : Éruptions du Geyser Old Faithful"
+		}
+	}
+}
