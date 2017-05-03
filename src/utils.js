@@ -16,7 +16,7 @@ window.i18n = (function() {
         }
 
         q.await(function() {
-          var j, data, namespaces, n, ns;console.log(arguments);
+          var j, data, namespaces, n, ns;
           for (j = 1; j < arguments.length; j++) {
             data = arguments[j];
             namespaces = Object.keys(data[lang]);
