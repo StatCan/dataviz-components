@@ -25,7 +25,7 @@ this.getAreaChart = function(svg, settings) {
     y = d3.scaleLinear().range([innerHeight, 0]),
     xAxis = d3.axisBottom(x).ticks(mergedSettings.x.ticks),
     yAxis = d3.axisLeft(y).ticks(mergedSettings.y.ticks),
-    chartInner = chart.select("g"),
+    chartInner = svg.select("g"),
     area = d3.area()
       .x(function(d) {
         return x(mergedSettings.x.getValue(d.data));
@@ -60,8 +60,7 @@ this.getAreaChart = function(svg, settings) {
       ]);
       stackData = stack
         .keys(keys)
-        .value(sett.y.getValue)
-      (data);
+        .value(sett.y.getValue)(data);
 
       chartInner
         .attr("transform", "translate(" + sett.margin.left + "," + sett.margin.top + ")");
@@ -73,7 +72,7 @@ this.getAreaChart = function(svg, settings) {
       }
 
       areas = dataLayer.selectAll(".area")
-        .data(stackData)
+        .data(stackData);
 
       areas
         .enter()
@@ -86,7 +85,7 @@ this.getAreaChart = function(svg, settings) {
         .attr("d", area);
 
       labels = dataLayer.selectAll(".label")
-        .data(stackData)
+        .data(stackData);
 
       labels
         .enter()
@@ -99,34 +98,34 @@ this.getAreaChart = function(svg, settings) {
 
       labels
         .transition(transition)
-        .attr("y", labelY)
+        .attr("y", labelY);
 
       if (xAxisObj.empty()) {
-        xAxisObj = chartInner.append('g')
-        .attr('class', 'x axis')
-        .attr("transform", "translate(0," + innerHeight + ")")
+        xAxisObj = chartInner.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + innerHeight + ")");
       }
       xAxisObj.call(xAxis);
 
       if (yAxisObj.empty()) {
-        yAxisObj = chartInner.append('g')
-          .attr('class', 'y axis')
+        yAxisObj = chartInner.append("g")
+          .attr("class", "y axis");
       }
       yAxisObj.call(yAxis);
     },
     rtnObj;
 
-	rtnObj = {
-		settings: mergedSettings,
-		svg: svg
-	};
+  rtnObj = {
+    settings: mergedSettings,
+    svg: svg
+  };
 
   svg
     .attr("viewBox", "0 0 " + outerWidth + " " + outerHeight)
     .attr("preserveAspectRatio", "xMidYMid meet");
 
   if (chartInner.empty()) {
-    chartInner = chart.append("g");
+    chartInner = svg.append("g");
   }
 
   if (!mergedSettings.data) {
