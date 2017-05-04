@@ -1,4 +1,4 @@
-(function() {
+(function(extend) {
 var scatterDefault = {
   margin: {
     top: 10,
@@ -19,7 +19,7 @@ var scatterDefault = {
 };
 
 this.scatterChart = function(svg, settings) {
-  var mergedSettings = $.extend({}, scatterDefault, settings),
+  var mergedSettings = extend({}, scatterDefault, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
@@ -313,4 +313,4 @@ this.scatterChart = function(svg, settings) {
   return rtnObj;
 };
 
-})();
+})(jQuery.extend);
