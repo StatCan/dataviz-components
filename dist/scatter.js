@@ -1,5 +1,5 @@
 (function(extend) {
-var scatterDefault = {
+var defaults = {
   margin: {
     top: 10,
     right: 10,
@@ -15,11 +15,11 @@ var scatterDefault = {
   },
   showLabels: false,
   pointRadius: 5,
-  width: 600,
+  width: 600
 };
 
 this.scatterChart = function(svg, settings) {
-  var mergedSettings = extend({}, scatterDefault, settings),
+  var mergedSettings = extend({}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
@@ -65,7 +65,7 @@ this.scatterChart = function(svg, settings) {
           sett.filterData(sett.data, "chart") : sett.data,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
-        dataLayer = svg.select("#data"),
+        dataLayer = chartInner.select(".data"),
         padding = 1 + sett.pointRadius / innerHeight,
         displayOnly = sett.displayOnly && typeof sett.displayOnly === "function" ?
           sett.displayOnly(data) : null,
@@ -117,7 +117,7 @@ this.scatterChart = function(svg, settings) {
 
           return lblY;
         },
-        xDomain, yDomain, bounds, scatter, scatterLabels;
+        xDomain, yDomain, bounds, scatter, labels;
 
       if (sett.filterOutliars) {
         bounds = getOutliarBounds(data);
@@ -142,7 +142,7 @@ this.scatterChart = function(svg, settings) {
 
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")
-          .attr("id", "data");
+          .attr("class", "data");
       }
 
       scatter = dataLayer.selectAll(".point")
@@ -168,9 +168,9 @@ this.scatterChart = function(svg, settings) {
           .remove();
 
 
-      scatterLabels = dataLayer.selectAll(".label");
+      labels = dataLayer.selectAll(".label");
       if (sett.showLabels) {
-        scatterLabels
+        labels
           .data(data)
           .enter()
           .append("text")
@@ -181,18 +181,18 @@ this.scatterChart = function(svg, settings) {
             .attr("x", xLabelFn)
             .attr("y", yLabelFn);
 
-        scatterLabels
+        labels
           .transition(transition)
           .text(sett.z.getText)
           .attr("class", labelClassFn)
           .attr("x", xLabelFn)
           .attr("y", yLabelFn);
 
-        scatterLabels
+        labels
           .exit()
             .remove();
       } else {
-        scatterLabels
+        labels
           .remove();
       }
 
