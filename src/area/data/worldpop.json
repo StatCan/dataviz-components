@@ -1,0 +1,60 @@
+{
+	"worldpop": [
+		{
+			"year": "1750-01",
+			"asia": 502,
+			"africa": 106,
+			"europe": 163,
+			"america": 18,
+			"oceania": 2
+		},
+		{
+			"year": "1800-01",
+			"asia": 635,
+			"africa": 107,
+			"europe": 203,
+			"america": 31,
+			"oceania": 2
+		},
+		{
+			"year": "1850-01",
+			"asia": 809,
+			"africa": 111,
+			"europe": 276,
+			"america": 54,
+			"oceania": 2
+		},
+		{
+			"year": "1900-01",
+			"asia": 947,
+			"africa": 133,
+			"europe": 408,
+			"america": 156,
+			"oceania": 6
+		},
+		{
+			"year": "1950-01",
+			"asia": 1402,
+			"africa": 221,
+			"europe": 547,
+			"america": 339,
+			"oceania": 13
+		},
+		{
+			"year": "2000-01",
+			"asia": 3634,
+			"africa": 767,
+			"europe": 729,
+			"america": 818,
+			"oceania": 30
+		},
+		{
+			"year": "2050-01",
+			"asia": 5268,
+			"africa": 1766,
+			"europe": 628,
+			"america": 1201,
+			"oceania": 46
+		}
+	]
+}

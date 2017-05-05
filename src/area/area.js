@@ -1,26 +1,27 @@
-(function() {
-var areaDefault = {
-    margin: {
-      top: 0,
-      right: 0,
-      bottom: 30,
-      left: 50
-    },
-    aspectRatio: 16 / 9,
-    x: {
-      ticks: 5
-    },
-    y: {
-      ticks: 10
-    }
+(function(extend) {
+var defaults = {
+  margin: {
+    top: 0,
+    right: 0,
+    bottom: 30,
+    left: 50
   },
-  outerWidth = 600;
+  aspectRatio: 16 / 9,
+  x: {
+    ticks: 5
+  },
+  y: {
+    ticks: 10
+  },
+  width: 600
+};
 
-this.getAreaChart = function(svg, settings) {
-  var mergedSettings = $.extend({}, areaDefault, settings),
+this.areaChart = function(svg, settings) {
+  var mergedSettings = extend({}, defaults, settings),
+    outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
-    innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
-    innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
+    innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
+    innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
     x = d3.scaleTime().range([0, innerWidth]),
     y = d3.scaleLinear().range([innerHeight, 0]),
     xAxis = d3.axisBottom(x).ticks(mergedSettings.x.ticks),
@@ -44,31 +45,37 @@ this.getAreaChart = function(svg, settings) {
         dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
         labelY = function(d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); },
-        keys = sett.z.getKeys(data), stackData, areas, labels;
+        keys = sett.z.getKeys(data),
+        classFn = function(d,i){
+          var cl = "area area" + (i + 1);
 
+          if (sett.z && sett.z.getClass && typeof sett.z.getClass === "function") {
+            cl += " " + sett.z.getClass(d);
+          }
 
-      x.domain(d3.extent(data, sett.x.getValue));
-      y.domain([
-        0,
-        d3.max(data, function(d) {
+          return cl;
+        },
+        getTotal = function(d) {
           var total = 0;
           for(var k = 0; k < keys.length; k++) {
             total += parseInt(sett.y.getValue(d, keys[k], data),10);
           }
           return total;
-        })
+        },
+        stackData, areas, labels;
+
+      x.domain(d3.extent(data, sett.x.getValue));
+      y.domain([
+        0,
+        d3.max(data, sett.y.getTotal ? sett.y.getTotal : getTotal)
       ]);
       stackData = stack
         .keys(keys)
         .value(sett.y.getValue)(data);
 
-      chartInner
-        .attr("transform", "translate(" + sett.margin.left + "," + sett.margin.top + ")");
-
       if (dataLayer.empty()) {
-        dataLayer = chartInner
-          .append("g")
-            .attr("class", "data");
+        dataLayer = chartInner.append("g")
+          .attr("class", "data");
       }
 
       areas = dataLayer.selectAll(".area")
@@ -77,24 +84,26 @@ this.getAreaChart = function(svg, settings) {
       areas
         .enter()
         .append("path")
-          .attr("class", function(d,i){return "area area" + (i + 1);})
+          .attr("class", classFn)
           .attr("d", area);
 
       areas
         .transition(transition)
         .attr("d", area);
 
-      labels = dataLayer.selectAll(".label")
-        .data(stackData);
-
+      labels = dataLayer.selectAll(".label");
       labels
+        .data(stackData)
         .enter()
         .append("text")
+          .text(sett.z.getText)
+          .attr("aria-hidden", "true")
           .attr("class", "label")
+          .attr("fill", "#000")
           .attr("x", labelX)
           .attr("y", labelY)
           .attr("dy", ".45em")
-          .text(function(d) { return d.key; });
+          .attr("text-anchor", "end");
 
       labels
         .transition(transition)
@@ -103,15 +112,32 @@ this.getAreaChart = function(svg, settings) {
       if (xAxisObj.empty()) {
         xAxisObj = chartInner.append("g")
         .attr("class", "x axis")
+        .attr("aria-hidden", "true")
         .attr("transform", "translate(0," + innerHeight + ")");
       }
-      xAxisObj.call(xAxis);
+      xAxisObj.call(xAxis)
+        .append("text")
+          .attr("class", "chart-label")
+          .attr("fill", "#000")
+          .attr("x", innerWidth)
+          .attr("dy", "-0.5em")
+          .attr("text-anchor", "end")
+          .text(settings.x.label);
 
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
-          .attr("class", "y axis");
+          .attr("class", "y axis")
+          .attr("aria-hidden", "true");
       }
-      yAxisObj.call(yAxis);
+      yAxisObj.call(yAxis)
+        .append("text")
+          .attr("class", "chart-label")
+          .attr("fill", "#000")
+          .attr("y", "0")
+          .attr("transform", "rotate(-90)")
+          .attr("dy", "1.5em")
+          .attr("text-anchor", "end")
+          .text(settings.y.label);
     },
     rtnObj;
 
@@ -122,10 +148,13 @@ this.getAreaChart = function(svg, settings) {
 
   svg
     .attr("viewBox", "0 0 " + outerWidth + " " + outerHeight)
-    .attr("preserveAspectRatio", "xMidYMid meet");
+    .attr("preserveAspectRatio", "xMidYMid meet")
+    .attr("role", "img")
+    .attr("aria-label", mergedSettings.altText);
 
   if (chartInner.empty()) {
-    chartInner = svg.append("g");
+    chartInner = svg.append("g")
+      .attr("transform", "translate(" + mergedSettings.margin.left + "," + mergedSettings.margin.top + ")");
   }
 
   if (!mergedSettings.data) {
@@ -140,4 +169,4 @@ this.getAreaChart = function(svg, settings) {
   return rtnObj;
 };
 
-})();
+})(jQuery.extend);

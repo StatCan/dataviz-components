@@ -1,0 +1,14 @@
+{
+	"en": {
+		"area": {
+			"alt": "Historic and Estimated Worldwide Population Growth by Region",
+			"x_label": "Year",
+			"y_label": "Population (in Millions)",
+			"oceania": "Oceania",
+			"america": "America",
+			"europe": "Europe",
+			"africa": "Africa",
+			"asia": "Asia"
+		}
+	}
+}

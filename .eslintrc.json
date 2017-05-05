@@ -7,8 +7,7 @@
       "d3": true,
       "i18n": true,
       "i18next": true,
-      "sgc": true,
-      "scatterChart": true
+      "sgc": true
     },
     "extends": "eslint:recommended",
     "rules": {

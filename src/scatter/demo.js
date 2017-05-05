@@ -1,3 +1,4 @@
+/* globals scatterChart */
 var chart = d3.select(".scatter.data")
     .append("svg")
       .attr("id", "demo");
