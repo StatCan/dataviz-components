@@ -16,7 +16,8 @@ i18n.load(["i18n"], function() {
 
       getValue: function(d) {
         return new Date(d.year);
-      }
+      },
+      ticks: 7
     },
 
     y: {
