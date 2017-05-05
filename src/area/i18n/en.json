@@ -4,7 +4,6 @@
 			"alt": "Historic and Estimated Worldwide Population Growth by Region",
 			"x_label": "Year",
 			"y_label": "Population (in Billions)",
-			"z_label": "Year",
 			"datatableTitle": "Data Table: Historic and Estimated Worldwide Population Growth by Region (in Billions)",
 			"oceania": "Oceania",
 			"america": "America",

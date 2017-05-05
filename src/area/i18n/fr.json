@@ -1,0 +1,15 @@
+{
+	"fr": {
+		"area": {
+			"alt": "Accroissement de la population mondiale historique et estimée par région",
+			"x_label": "Année",
+			"y_label": "Population (en Milliards)",
+			"datatableTitle": "Tableau de données : Accroissement de la population mondiale historique et estimée par région (en Milliards)",
+			"oceania": "Océanie",
+			"america": "Amérique",
+			"europe": "Europe",
+			"africa": "Afrique",
+			"asia": "Asie"
+		}
+	}
+}

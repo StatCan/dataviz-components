@@ -165,7 +165,7 @@ this.areaChart = function(svg, settings) {
         body = table.append("tbody");
 
         header.append("th")
-          .text(sett.z.label);
+          .text(sett.x.label);
 
         for(k = 0; k < keys.length; k++) {
           header.append("th")
