@@ -9,13 +9,17 @@ i18n.load(["i18n"], function() {
   settings = {
     alt: i18next.t("alt", {ns: "area"}),
     url: "data/worldpop.json",
+    datatableTitle: i18next.t("datatableTitle", {ns: "area"}),
     filterData: function(data) {
       return data.worldpop;
     },
     x: {
 
       getValue: function(d) {
-        return new Date(d.year);
+        return new Date(d.year + "-01");
+      },
+      getText: function(d) {
+        return d.year;
       },
       ticks: 7
     },

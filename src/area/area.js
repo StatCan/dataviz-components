@@ -139,6 +139,68 @@ this.areaChart = function(svg, settings) {
           .attr("text-anchor", "end")
           .text(settings.y.label);
     },
+    drawTable = function() {
+      var sett = this.settings,
+        data = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData(sett.data, "table") : sett.data,
+        parent = svg.select(function(){return this.parentNode;}),
+        details = parent
+          .select("details"),
+        keys = sett.z.getKeys(data),
+        table, header, body, dataRows, dataRow, k;
+
+      if (details.empty()) {
+        details = parent
+          .append("details")
+            .attr("class", "chart-data-table");
+
+        details.append("summary")
+          .attr("id", "chrt-dt-tbl")
+          .text(sett.datatableTitle);
+
+        table = details
+          .append("table")
+            .attr("class", "table");
+        header = table.append("thead").append("tr");
+        body = table.append("tbody");
+
+        header.append("th")
+          .text(sett.z.label);
+
+        for(k = 0; k < keys.length; k++) {
+          header.append("th")
+            .text(sett.z.getText({
+              key: keys[k]
+            }));
+        }
+
+        dataRows = body.selectAll("tr")
+          .data(data);
+
+        dataRow = dataRows
+          .enter()
+            .append("tr");
+
+        dataRow
+          .append("th")
+            .text(sett.x.getText || sett.x.getValue);
+
+        for(k = 0; k < keys.length; k++) {
+          dataRow
+            .append("td")
+              .text(function(d) {
+                if (sett.y.getText) {
+                  return sett.y.getText(d, keys[k]);
+                }
+                return sett.y.getValue(d, keys[k]);
+              });
+        }
+
+        if ($) {
+          $(".chart-data-table summary").trigger("wb-init.wb-details");
+        }
+      }
+    },
     rtnObj;
 
   rtnObj = {
@@ -161,9 +223,11 @@ this.areaChart = function(svg, settings) {
     d3.json(mergedSettings.url, function(error, data) {
       mergedSettings.data = data;
       draw.apply(rtnObj);
+      drawTable.apply(rtnObj);
     });
   } else {
     draw.apply(rtnObj);
+    drawTable.apply(rtnObj);
   }
 
   return rtnObj;
