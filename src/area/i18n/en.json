@@ -3,7 +3,7 @@
 		"area": {
 			"alt": "Historic and Estimated Worldwide Population Growth by Region",
 			"x_label": "Year",
-			"y_label": "Population (in Millions)",
+			"y_label": "Population (in Billions)",
 			"oceania": "Oceania",
 			"america": "America",
 			"europe": "Europe",

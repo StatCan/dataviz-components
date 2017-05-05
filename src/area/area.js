@@ -58,7 +58,7 @@ this.areaChart = function(svg, settings) {
         getTotal = function(d) {
           var total = 0;
           for(var k = 0; k < keys.length; k++) {
-            total += parseInt(sett.y.getValue(d, keys[k], data),10);
+            total += sett.y.getValue(d, keys[k], data);
           }
           return total;
         },
@@ -102,7 +102,7 @@ this.areaChart = function(svg, settings) {
           .attr("fill", "#000")
           .attr("x", labelX)
           .attr("y", labelY)
-          .attr("dy", ".45em")
+          .attr("dy", "1em")
           .attr("text-anchor", "end");
 
       labels

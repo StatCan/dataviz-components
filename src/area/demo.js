@@ -22,7 +22,7 @@ i18n.load(["i18n"], function() {
     y: {
       label: i18next.t("y_label", {ns: "area"}),
       getValue: function(d, key) {
-        return d[key];
+        return d[key] * 1.0 / 1000;
       }
     },
 
