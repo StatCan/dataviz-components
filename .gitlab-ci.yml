@@ -1,0 +1,14 @@
+image: docker:latest
+
+services:
+- docker:dind
+
+pages:
+  stage: deploy
+  script:
+  - docker run --rm -P -v $(pwd):/src -v $(pwd)/public:/output jojomi/hugo
+  artifacts:
+    paths:
+    - public
+  only:
+  - master
