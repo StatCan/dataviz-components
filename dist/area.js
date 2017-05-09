@@ -11,13 +11,28 @@ var defaults = {
     ticks: 5
   },
   y: {
-    ticks: 10
+    ticks: 10,
+    totalProperty: "total",
+    getTotal: function(d, index, data) {
+      var sett = this,
+        total, keys;
+      if (!d[sett.y.totalProperty]) {
+        keys = sett.z.getKeys.bind(sett)(data);
+        total = 0;
+        for(var k = 0; k < keys.length; k++) {
+          total += sett.y.getValue.bind(sett)(d, keys[k], data);
+        }
+        d[sett.y.totalProperty] = total;
+      }
+
+      return d[sett.y.totalProperty];
+    }
   },
   width: 600
 };
 
 this.areaChart = function(svg, settings) {
-  var mergedSettings = extend({}, defaults, settings),
+  var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
@@ -45,33 +60,26 @@ this.areaChart = function(svg, settings) {
         dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
         labelY = function(d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); },
-        keys = sett.z.getKeys(data),
+        keys = sett.z.getKeys.bind(sett)(data),
         classFn = function(d,i){
           var cl = "area area" + (i + 1);
 
           if (sett.z && sett.z.getClass && typeof sett.z.getClass === "function") {
-            cl += " " + sett.z.getClass(d);
+            cl += " " + sett.z.getClass.bind(sett)(d);
           }
 
           return cl;
         },
-        getTotal = function(d) {
-          var total = 0;
-          for(var k = 0; k < keys.length; k++) {
-            total += sett.y.getValue(d, keys[k], data);
-          }
-          return total;
-        },
         stackData, areas, labels;
 
-      x.domain(d3.extent(data, sett.x.getValue));
+      x.domain(d3.extent(data, sett.x.getValue.bind(sett)));
       y.domain([
         0,
-        d3.max(data, sett.y.getTotal ? sett.y.getTotal : getTotal)
+        d3.max(data, sett.y.getTotal.bind(sett))
       ]);
       stackData = stack
         .keys(keys)
-        .value(sett.y.getValue)(data);
+        .value(sett.y.getValue.bind(sett))(data);
 
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")
@@ -96,7 +104,7 @@ this.areaChart = function(svg, settings) {
         .data(stackData)
         .enter()
         .append("text")
-          .text(sett.z.getText)
+          .text(sett.z.getText.bind(sett))
           .attr("aria-hidden", "true")
           .attr("class", "label")
           .attr("fill", "#000")
@@ -139,6 +147,68 @@ this.areaChart = function(svg, settings) {
           .attr("text-anchor", "end")
           .text(settings.y.label);
     },
+    drawTable = function() {
+      var sett = this.settings,
+        data = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData(sett.data, "table") : sett.data,
+        parent = svg.select(function(){return this.parentNode;}),
+        details = parent
+          .select("details"),
+        keys = sett.z.getKeys.bind(sett)(data),
+        table, header, body, dataRows, dataRow, k;
+
+      if (details.empty()) {
+        details = parent
+          .append("details")
+            .attr("class", "chart-data-table");
+
+        details.append("summary")
+          .attr("id", "chrt-dt-tbl")
+          .text(sett.datatableTitle);
+
+        table = details
+          .append("table")
+            .attr("class", "table");
+        header = table.append("thead").append("tr");
+        body = table.append("tbody");
+
+        header.append("th")
+          .text(sett.x.label);
+
+        for(k = 0; k < keys.length; k++) {
+          header.append("th")
+            .text(sett.z.getText.bind(sett)({
+              key: keys[k]
+            }));
+        }
+
+        dataRows = body.selectAll("tr")
+          .data(data);
+
+        dataRow = dataRows
+          .enter()
+            .append("tr");
+
+        dataRow
+          .append("th")
+            .text(sett.x.getText.bind(sett) || sett.x.getValue.bind(sett));
+
+        for(k = 0; k < keys.length; k++) {
+          dataRow
+            .append("td")
+              .text(function(d) {
+                if (sett.y.getText) {
+                  return sett.y.getText.bind(sett)(d, keys[k]);
+                }
+                return sett.y.getValue.bind(sett)(d, keys[k]);
+              });
+        }
+
+        if ($) {
+          $(".chart-data-table summary").trigger("wb-init.wb-details");
+        }
+      }
+    },
     rtnObj;
 
   rtnObj = {
@@ -161,9 +231,11 @@ this.areaChart = function(svg, settings) {
     d3.json(mergedSettings.url, function(error, data) {
       mergedSettings.data = data;
       draw.apply(rtnObj);
+      drawTable.apply(rtnObj);
     });
   } else {
     draw.apply(rtnObj);
+    drawTable.apply(rtnObj);
   }
 
   return rtnObj;

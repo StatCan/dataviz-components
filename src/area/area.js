@@ -20,7 +20,7 @@ var defaults = {
         keys = sett.z.getKeys.bind(sett)(data);
         total = 0;
         for(var k = 0; k < keys.length; k++) {
-          total += sett.y.getValue(d, keys[k], data);
+          total += sett.y.getValue.bind(sett)(d, keys[k], data);
         }
         d[sett.y.totalProperty] = total;
       }
@@ -65,21 +65,21 @@ this.areaChart = function(svg, settings) {
           var cl = "area area" + (i + 1);
 
           if (sett.z && sett.z.getClass && typeof sett.z.getClass === "function") {
-            cl += " " + sett.z.getClass(d);
+            cl += " " + sett.z.getClass.bind(sett)(d);
           }
 
           return cl;
         },
         stackData, areas, labels;
 
-      x.domain(d3.extent(data, sett.x.getValue));
+      x.domain(d3.extent(data, sett.x.getValue.bind(sett)));
       y.domain([
         0,
         d3.max(data, sett.y.getTotal.bind(sett))
       ]);
       stackData = stack
         .keys(keys)
-        .value(sett.y.getValue)(data);
+        .value(sett.y.getValue.bind(sett))(data);
 
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")
@@ -104,7 +104,7 @@ this.areaChart = function(svg, settings) {
         .data(stackData)
         .enter()
         .append("text")
-          .text(sett.z.getText)
+          .text(sett.z.getText.bind(sett))
           .attr("aria-hidden", "true")
           .attr("class", "label")
           .attr("fill", "#000")
@@ -177,7 +177,7 @@ this.areaChart = function(svg, settings) {
 
         for(k = 0; k < keys.length; k++) {
           header.append("th")
-            .text(sett.z.getText({
+            .text(sett.z.getText.bind(sett)({
               key: keys[k]
             }));
         }
@@ -191,16 +191,16 @@ this.areaChart = function(svg, settings) {
 
         dataRow
           .append("th")
-            .text(sett.x.getText || sett.x.getValue);
+            .text(sett.x.getText.bind(sett) || sett.x.getValue.bind(sett));
 
         for(k = 0; k < keys.length; k++) {
           dataRow
             .append("td")
               .text(function(d) {
                 if (sett.y.getText) {
-                  return sett.y.getText(d, keys[k]);
+                  return sett.y.getText.bind(sett)(d, keys[k]);
                 }
-                return sett.y.getValue(d, keys[k]);
+                return sett.y.getValue.bind(sett)(d, keys[k]);
               });
         }
 

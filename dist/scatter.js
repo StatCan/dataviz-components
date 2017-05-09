@@ -19,7 +19,7 @@ var defaults = {
 };
 
 this.scatterChart = function(svg, settings) {
-  var mergedSettings = extend({}, defaults, settings),
+  var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,

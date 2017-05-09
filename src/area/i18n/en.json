@@ -1,15 +1,17 @@
 {
-	"en": {
-		"area": {
-			"alt": "Historic and Estimated Worldwide Population Growth by Region",
-			"x_label": "Year",
-			"y_label": "Population (in Billions)",
-			"datatableTitle": "Data Table: Historic and Estimated Worldwide Population Growth by Region (in Billions)",
-			"oceania": "Oceania",
-			"america": "America",
-			"europe": "Europe",
-			"africa": "Africa",
-			"asia": "Asia"
-		}
-	}
+  "en": {
+    "area": {
+      "alt": "Historic and Estimated Worldwide Population Growth by Region",
+      "x_label": "Year",
+      "y_label": "Population (in Billions)",
+      "y_label_percent": "Population (in Percentage of the Planet)",
+      "datatableTitle": "Data Table: Historic and Estimated Worldwide Population Growth by Region (in Billions)",
+      "datatableTitlePercent": "Data Table: Historic and Estimated Worldwide Population Growth by Region (in Percentage of the Planet)",
+      "oceania": "Oceania",
+      "america": "America",
+      "europe": "Europe",
+      "africa": "Africa",
+      "asia": "Asia"
+    }
+  }
 }

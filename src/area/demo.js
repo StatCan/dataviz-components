@@ -1,7 +1,10 @@
 /* globals areaChart */
 var chart = d3.select(".area.data")
     .append("svg")
-      .attr("id", "demo");
+      .attr("id", "demo"),
+    percentChart = d3.select(".area.datapercent")
+        .append("svg")
+          .attr("id", "demopercent");
 
 i18n.load(["i18n"], function() {
   var settings,
@@ -52,4 +55,40 @@ i18n.load(["i18n"], function() {
   };
 
   areaChart(chart, settings);
+
+  percentSettings = $.extend(true, {}, settings, {
+    datatableTitle: i18next.t("datatableTitlePercent", {ns: "area"}),
+    y: {
+      label: i18next.t("y_label_percent", {ns: "area"}),
+      getAbsoluteTotal: function(d, index, data) {console.log(arguments);
+        var sett = this;
+        if (!d[sett.y.totalProperty]) {
+          keys = sett.z.getKeys.bind(sett)(data);
+          total = 0;
+          for(var k = 0; k < keys.length; k++) {
+            total += sett.y.getAbsoluteValue.bind(sett)(d, keys[k], data);
+          }
+          d[sett.y.totalProperty] = total;
+        }
+
+        return d[sett.y.totalProperty];
+      },
+      getAbsoluteValue: function(d, key) {
+        return d[key];
+      },
+      getTotal: function() {
+        return 100;
+      },
+      getValue: function(d, key, index, data) {
+        var sett = this;
+        return sett.y.getAbsoluteValue(d, key) * 1.0 / sett.y.getAbsoluteTotal.call(sett, d, key, data) * 100;
+      },
+      getText: function() {
+        var sett = this;
+        return Math.round(sett.y.getValue.apply(this, arguments) * 10) / 10 + "%";
+      }
+    }
+  });
+
+  areaChart(percentChart, percentSettings);
 });
