@@ -4,7 +4,8 @@ var chart = d3.select(".area.data")
       .attr("id", "demo");
 
 i18n.load(["i18n"], function() {
-  var settings;
+  var settings,
+  id = "year";
 
   settings = {
     alt: i18next.t("alt", {ns: "area"}),
@@ -16,10 +17,10 @@ i18n.load(["i18n"], function() {
     x: {
 
       getValue: function(d) {
-        return new Date(d.year + "-01");
+        return new Date(d[id] + "-01");
       },
       getText: function(d) {
-        return d.year;
+        return d[id];
       },
       ticks: 7
     },
@@ -34,8 +35,10 @@ i18n.load(["i18n"], function() {
     z: {
       label: i18next.t("z_label", {ns: "area"}),
       getKeys: function(object) {
-        var keys = Object.keys(object[0]);
-        keys.splice(keys.indexOf("year"),1);
+        var sett = this,
+          keys = Object.keys(object[0]);
+        keys.splice(keys.indexOf(id),1);
+        keys.splice(keys.indexOf(sett.y.totalProperty),1);
         return keys;
       },
       getClass: function(d) {

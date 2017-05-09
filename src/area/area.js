@@ -11,7 +11,22 @@ var defaults = {
     ticks: 5
   },
   y: {
-    ticks: 10
+    ticks: 10,
+    totalProperty: "total",
+    getTotal: function(d, index, data) {
+      var sett = this,
+        total, keys;
+      if (!d[sett.y.totalProperty]) {
+        keys = sett.z.getKeys.bind(sett)(data);
+        total = 0;
+        for(var k = 0; k < keys.length; k++) {
+          total += sett.y.getValue(d, keys[k], data);
+        }
+        d[sett.y.totalProperty] = total;
+      }
+
+      return d[sett.y.totalProperty];
+    }
   },
   width: 600
 };
@@ -45,7 +60,7 @@ this.areaChart = function(svg, settings) {
         dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
         labelY = function(d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); },
-        keys = sett.z.getKeys(data),
+        keys = sett.z.getKeys.bind(sett)(data),
         classFn = function(d,i){
           var cl = "area area" + (i + 1);
 
@@ -55,19 +70,12 @@ this.areaChart = function(svg, settings) {
 
           return cl;
         },
-        getTotal = function(d) {
-          var total = 0;
-          for(var k = 0; k < keys.length; k++) {
-            total += sett.y.getValue(d, keys[k], data);
-          }
-          return total;
-        },
         stackData, areas, labels;
 
       x.domain(d3.extent(data, sett.x.getValue));
       y.domain([
         0,
-        d3.max(data, sett.y.getTotal ? sett.y.getTotal : getTotal)
+        d3.max(data, sett.y.getTotal.bind(sett))
       ]);
       stackData = stack
         .keys(keys)
@@ -146,7 +154,7 @@ this.areaChart = function(svg, settings) {
         parent = svg.select(function(){return this.parentNode;}),
         details = parent
           .select("details"),
-        keys = sett.z.getKeys(data),
+        keys = sett.z.getKeys.bind(sett)(data),
         table, header, body, dataRows, dataRow, k;
 
       if (details.empty()) {
