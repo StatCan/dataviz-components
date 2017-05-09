@@ -68,12 +68,12 @@ this.scatterChart = function(svg, settings) {
         dataLayer = chartInner.select(".data"),
         padding = 1 + sett.pointRadius / innerHeight,
         displayOnly = sett.displayOnly && typeof sett.displayOnly === "function" ?
-          sett.displayOnly(data) : null,
+          sett.displayOnly.call(sett, data) : null,
         classFn = function(d,i){
           var cl = "point point" + (i + 1);
 
           if (sett.z && sett.z.getClass && typeof sett.z.getClass === "function") {
-            cl += " " + sett.z.getClass(d);
+            cl += " " + sett.z.getClass.call(sett, d);
           }
 
           if (!displayOnly || displayOnly.indexOf(d) !== -1) {
@@ -96,8 +96,8 @@ this.scatterChart = function(svg, settings) {
             return sett.z.getId(d);
           }
         },
-        xFn = function(d) {return x(sett.x.getValue(d));},
-        yFn = function(d) {return y(sett.y.getValue(d));},
+        xFn = function(d) {return x(sett.x.getValue.call(this, d));},
+        yFn = function(d) {return y(sett.y.getValue.call(this, d));},
         xLabelFn = function(d, i, selection) {
           var bbox = selection[i].getBBox(),
             lblX = xFn(d) + sett.pointRadius;
@@ -124,12 +124,9 @@ this.scatterChart = function(svg, settings) {
 
         xDomain = [bounds.x.min, bounds.x.max];
         yDomain = [bounds.y.min, bounds.y.max];
-      } else if (displayOnly) {
-        xDomain = d3.extent(displayOnly, sett.x.getValue);
-        yDomain = d3.extent(displayOnly, sett.y.getValue);
       } else {
-        xDomain = d3.extent(data, sett.x.getValue);
-        yDomain = d3.extent(data, sett.y.getValue);
+        xDomain = d3.extent(displayOnly ? displayOnly : data, sett.x.getValue.bind(sett));
+        yDomain = d3.extent(displayOnly ? displayOnly : data, sett.y.getValue.bind(sett));
       }
 
       xDomain[0] -= padding;
@@ -174,7 +171,7 @@ this.scatterChart = function(svg, settings) {
           .data(data)
           .enter()
           .append("text")
-            .text(sett.z.getText)
+            .text(sett.z.getText.bind(sett))
             .attr("aria-hidden", "true")
             .attr("class", labelClassFn)
             .attr("fill", "#000")
@@ -183,7 +180,7 @@ this.scatterChart = function(svg, settings) {
 
         labels
           .transition(transition)
-          .text(sett.z.getText)
+          .text(sett.z.getText.bind(sett))
           .attr("class", labelClassFn)
           .attr("x", xLabelFn)
           .attr("y", yLabelFn);
@@ -266,15 +263,15 @@ this.scatterChart = function(svg, settings) {
 
         dataRow
           .append("th")
-            .text(settings.z.getText);
+            .text(settings.z.getText.bind(sett));
 
         dataRow
           .append("td")
-            .text(settings.x.getText || settings.x.getValue);
+            .text((settings.x.getText || settings.x.getValue).bind(sett));
 
         dataRow
           .append("td")
-            .text(settings.y.getText || settings.y.getValue);
+            .text((settings.y.getText || settings.y.getValue).bind(sett) );
 
         if ($) {
           $(".chart-data-table summary").trigger("wb-init.wb-details");

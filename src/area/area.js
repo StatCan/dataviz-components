@@ -17,10 +17,10 @@ var defaults = {
       var sett = this,
         total, keys;
       if (!d[sett.y.totalProperty]) {
-        keys = sett.z.getKeys.bind(sett)(data);
+        keys = sett.z.getKeys.call(sett, data);
         total = 0;
         for(var k = 0; k < keys.length; k++) {
-          total += sett.y.getValue.bind(sett)(d, keys[k], data);
+          total += sett.y.getValue.call(sett, d, keys[k], data);
         }
         d[sett.y.totalProperty] = total;
       }
@@ -60,12 +60,12 @@ this.areaChart = function(svg, settings) {
         dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
         labelY = function(d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); },
-        keys = sett.z.getKeys.bind(sett)(data),
+        keys = sett.z.getKeys.call(sett, data),
         classFn = function(d,i){
           var cl = "area area" + (i + 1);
 
           if (sett.z && sett.z.getClass && typeof sett.z.getClass === "function") {
-            cl += " " + sett.z.getClass.bind(sett)(d);
+            cl += " " + sett.z.getClass.call(sett, d);
           }
 
           return cl;
@@ -154,7 +154,7 @@ this.areaChart = function(svg, settings) {
         parent = svg.select(function(){return this.parentNode;}),
         details = parent
           .select("details"),
-        keys = sett.z.getKeys.bind(sett)(data),
+        keys = sett.z.getKeys.call(sett, data),
         table, header, body, dataRows, dataRow, k;
 
       if (details.empty()) {
@@ -191,16 +191,16 @@ this.areaChart = function(svg, settings) {
 
         dataRow
           .append("th")
-            .text(sett.x.getText.bind(sett) || sett.x.getValue.bind(sett));
+            .text((sett.x.getText || sett.x.getValue).bind(sett));
 
         for(k = 0; k < keys.length; k++) {
           dataRow
             .append("td")
               .text(function(d) {
                 if (sett.y.getText) {
-                  return sett.y.getText.bind(sett)(d, keys[k]);
+                  return sett.y.getText.call(sett, d, keys[k]);
                 }
-                return sett.y.getValue.bind(sett)(d, keys[k]);
+                return sett.y.getValue.call(sett, d, keys[k]);
               });
         }
 
