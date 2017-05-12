@@ -1,0 +1,17 @@
+{
+	"en": {
+		"line": {
+			"alt": "Total Population - Both Sexes (1950-2015)",
+			"datatableTitle": "Total Population - Both Sexes (1950-2015)",
+			"x_label": "Years",
+			"y_label": "Population (in Millions)",
+			"world": "World",
+			"moredev": "More developed regions",
+			"lessdev": "Less developed regions",
+			"lessdev_nochina": "Less developed regions, excluding China",
+			"highincome": "High-income countries",
+			"middleincome": "Middle-income countries",
+			"lowincome": "Low-income countries"
+		}
+	}
+}
