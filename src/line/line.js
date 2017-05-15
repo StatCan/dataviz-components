@@ -43,6 +43,7 @@ this.lineChart = function(svg, settings) {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData(sett.data) : sett.data,
+        showLabel = sett.showLabels || data.length > 1,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
@@ -91,28 +92,30 @@ this.lineChart = function(svg, settings) {
         .transition(transition)
         .attr("d", lineFn);
 
-      labels = dataLayer.selectAll(".label");
-      labels
-        .data(data)
-        .enter()
-        .append("text")
-          .text(sett.z.getText.bind(sett))
-          .datum(function(d){
-            var points = sett.z.getDataPoints.call(sett, d);
-            return points[points.length - 1];
+      if(showLabel) {
+        labels = dataLayer.selectAll(".label");
+        labels
+          .data(data)
+          .enter()
+          .append("text")
+            .text(sett.z.getText.bind(sett))
+            .datum(function(d){
+              var points = sett.z.getDataPoints.call(sett, d);
+              return points[points.length - 1];
 
-          })
-          .attr("aria-hidden", "true")
-          .attr("class", "label")
-          .attr("fill", "#000")
-          .attr("x", labelX)
-          .attr("y", labelY)
-          .attr("dy", "1em")
-          .attr("text-anchor", "end");
+            })
+            .attr("aria-hidden", "true")
+            .attr("class", "label")
+            .attr("fill", "#000")
+            .attr("x", labelX)
+            .attr("y", labelY)
+            .attr("dy", "1em")
+            .attr("text-anchor", "end");
 
-      labels
-        .transition(transition)
-        .attr("y", labelY);
+        labels
+          .transition(transition)
+          .attr("y", labelY);
+      }
 
       if (xAxisObj.empty()) {
         xAxisObj = chartInner.append("g")
