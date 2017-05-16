@@ -31,6 +31,19 @@ window.i18n = (function() {
           }
         });
       });
+    },
+    getNumberFormatter: function(precision) {
+      var options = {
+        minimumFractionDigits: precision || 0
+      };
+
+      try {
+        return new Intl.NumberFormat(lang, options);
+      } catch (e) {
+        return {
+          format: function(d){return d;}
+        };
+      }
     }
   };
 })();

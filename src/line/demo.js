@@ -4,7 +4,8 @@ var chart = d3.select(".line.data")
       .attr("id", "demo");
 
 i18n.load(["i18n"], function() {
-  var settings;
+  var formatter = i18n.getNumberFormatter(),
+    settings;
 
   settings = {
     alt: i18next.t("alt", {ns: "line"}),
@@ -31,6 +32,9 @@ i18n.load(["i18n"], function() {
       label: i18next.t("x_label", {ns: "line"}),
       getValue: function(d) {
         return new Date(d.year + "-01");
+      },
+      getText: function(d) {
+        return d.year;
       }
     },
 
@@ -38,6 +42,9 @@ i18n.load(["i18n"], function() {
       label: i18next.t("y_label", {ns: "line"}),
       getValue: function(d) {
         return d.pop * 1.0 / 1000000;
+      },
+      getText: function(d) {
+        return formatter.format(Math.round(d.pop));
       }
     },
 

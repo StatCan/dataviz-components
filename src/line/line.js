@@ -155,7 +155,8 @@ this.lineChart = function(svg, settings) {
         details = parent
           .select("details"),
         keys = sett.z.getKeys.call(sett, data),
-        table, header, body, dataRows, dataRow, k;
+        columns = sett.z.getDataPoints.call(sett, data[keys[0]]),
+        table, header, body, dataRows, dataRow, c;
 
       if (details.empty()) {
         details = parent
@@ -172,14 +173,12 @@ this.lineChart = function(svg, settings) {
         header = table.append("thead").append("tr");
         body = table.append("tbody");
 
-        header.append("th")
-          .text(sett.x.label);
+        header.append("td");
 
-        for(k = 0; k < keys.length; k++) {
+        for(c = 0; c < columns.length; c++) {
           header.append("th")
-            .text(sett.z.getText.bind(sett)({
-              key: keys[k]
-            }));
+            .datum(columns[c])
+            .text((sett.x.getText || sett.x.getValue).bind(sett));
         }
 
         dataRows = body.selectAll("tr")
@@ -191,16 +190,17 @@ this.lineChart = function(svg, settings) {
 
         dataRow
           .append("th")
-            .text((sett.x.getText || sett.x.getValue).bind(sett));
+            .text((sett.z.getText || sett.z.getValue).bind(sett));
 
-        for(k = 0; k < keys.length; k++) {
+        for(c = 0; c < columns.length; c++) {
           dataRow
+            .datum(columns[c])
             .append("td")
               .text(function(d) {
                 if (sett.y.getText) {
-                  return sett.y.getText.call(sett, d, keys[k]);
+                  return sett.y.getText.call(sett, d, keys[c]);
                 }
-                return sett.y.getValue.call(sett, d, keys[k]);
+                return sett.y.getValue.call(sett, d, keys[c]);
               });
         }
 
