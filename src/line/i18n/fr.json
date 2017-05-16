@@ -1,0 +1,17 @@
+{
+	"fr": {
+		"line": {
+			"alt": "Population Totale - Deux Sexes (1950-2015)",
+			"datatableTitle": "Population Totale - Deux Sexes (1950-2015)",
+			"x_label": "Années",
+			"y_label": "Population (en Milliards)",
+			"world": "Monde",
+			"moredev": "Régions plus dévelopées",
+			"lessdev": "Régions moins dévelopées",
+			"lessdev_nochina": "Régions moins dévelopées, excluant la Chine",
+			"highincome": "Pays à haut revenu",
+			"middleincome": "Pays à revenu moyen",
+			"lowincome": "Pays à faible revenu"
+		}
+	}
+}
