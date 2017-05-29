@@ -39,7 +39,7 @@ this.lineChart = function(svg, settings) {
     draw = function() {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData(sett.data) : sett.data,
+          sett.filterData.call(sett, sett.data) : sett.data,
         showLabel = sett.showLabels || data.length > 1,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
@@ -58,17 +58,15 @@ this.lineChart = function(svg, settings) {
         lineFn = function(d) {
           return line(sett.z.getDataPoints.call(sett, d));
         },
+        flatData = [].concat.apply([], data.map(function(d) {
+          return sett.z.getDataPoints.call(sett, d);
+        })),
         lines, labels;
 
-      x.domain(d3.extent(
-        [].concat.apply([], data.map(sett.z.getDataPoints.bind(sett))),
-        sett.x.getValue.bind(sett)
-      ));
+      x.domain(d3.extent(flatData, sett.x.getValue.bind(sett)));
       y.domain([
         0,
-        d3.max(data, function(d){
-          return d3.max(sett.z.getDataPoints.call(sett, d), sett.y.getValue.bind(sett));
-        })
+        d3.max(flatData, sett.y.getValue.bind(sett))
       ]);
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")

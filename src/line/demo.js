@@ -11,22 +11,20 @@ i18n.load(["i18n"], function() {
     alt: i18next.t("alt", {ns: "line"}),
     url: "data/un_worldpop.json",
     datatableTitle: i18next.t("datatableTitle", {ns: "line"}),
-    filterData: function(data) {
-      var sett = this,
-        filteredData = data.un_worldpop,
-        sets = sett.z.getKeys(filteredData).map(function(key){
-          var set = {
-            id: key,
-          };
-          set.values = filteredData[key].map(function(value, index) {
+    filterData: function(d) {
+      var root = d.un_worldpop,
+        keys = this.z.getKeys(root);
+      return keys.map(function(key) {
+        return {
+          id: key,
+          values: root[key].map(function(value, index) {
             return {
-              year: filteredData.keys.values[index],
+              year: root.keys.values[index],
               pop: value
             };
-          });
-          return set;
-        });
-      return sets;
+          })
+        };
+      });
     },
     x: {
       label: i18next.t("x_label", {ns: "line"}),
