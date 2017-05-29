@@ -13,9 +13,6 @@ var defaults = {
   y: {
     ticks: 10,
   },
-  z: {
-    dataPointsProperty: "values"
-  },
   width: 600
 };
 
@@ -196,7 +193,7 @@ this.lineChart = function(svg, settings) {
           dataRow
             .append("td")
               .datum(function(d) {
-                return d[sett.z.dataPointsProperty][c];
+                return sett.z.getDataPoints.call(sett, d)[c];
               })
               .text((sett.y.getText ? sett.y.getText : sett.y.getValue).bind(sett));
         }

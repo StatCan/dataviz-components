@@ -18,7 +18,7 @@ i18n.load(["i18n"], function() {
           var set = {
             id: key,
           };
-          set[sett.z.dataPointsProperty] = filteredData[key].map(function(value, index) {
+          set.values = filteredData[key].map(function(value, index) {
             return {
               year: filteredData.keys.values[index],
               pop: value
@@ -59,8 +59,7 @@ i18n.load(["i18n"], function() {
         return d.id;
       },
       getDataPoints: function(d) {
-        var sett = this;
-        return d[sett.z.dataPointsProperty];
+        return d.values;
       },
       getText: function(d) {
         return i18next.t(d.id, {ns: "line"});
