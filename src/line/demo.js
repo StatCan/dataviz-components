@@ -10,7 +10,9 @@ i18n.load(["i18n"], function() {
   settings = {
     alt: i18next.t("alt", {ns: "line"}),
     url: "data/un_worldpop.json",
-    datatableTitle: i18next.t("datatableTitle", {ns: "line"}),
+    datatable: {
+      title: i18next.t("datatableTitle", {ns: "line"})
+    },
     filterData: function(d) {
       var root = d.un_worldpop,
         keys = this.z.getKeys(root);

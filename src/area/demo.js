@@ -13,7 +13,9 @@ i18n.load(["i18n"], function() {
   settings = {
     alt: i18next.t("alt", {ns: "area"}),
     url: "data/worldpop.json",
-    datatableTitle: i18next.t("datatableTitle", {ns: "area"}),
+    datatable: {
+      title: i18next.t("datatableTitle", {ns: "area"})
+    },
     filterData: function(data) {
       return data.worldpop;
     },

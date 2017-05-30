@@ -164,7 +164,7 @@ this.areaChart = function(svg, settings) {
 
         details.append("summary")
           .attr("id", "chrt-dt-tbl")
-          .text(sett.datatableTitle);
+          .text(sett.datatable.title);
 
         table = details
           .append("table")
@@ -209,7 +209,7 @@ this.areaChart = function(svg, settings) {
         }
       }
     },
-    rtnObj;
+    rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
@@ -227,15 +227,18 @@ this.areaChart = function(svg, settings) {
       .attr("transform", "translate(" + mergedSettings.margin.left + "," + mergedSettings.margin.top + ")");
   }
 
+  process = function() {
+    draw.apply(rtnObj);
+    if (mergedSettings.datatTable === false) return;
+    drawTable.apply(rtnObj);
+  };
   if (!mergedSettings.data) {
     d3.json(mergedSettings.url, function(error, data) {
       mergedSettings.data = data;
-      draw.apply(rtnObj);
-      drawTable.apply(rtnObj);
+      process();
     });
   } else {
-    draw.apply(rtnObj);
-    drawTable.apply(rtnObj);
+    process();
   }
 
   return rtnObj;

@@ -9,7 +9,9 @@ i18n.load(["i18n"], function() {
   settings = {
     alt: i18next.t("alt", {ns: "scatter"}),
     url: "data/oldfaithful.json",
-    datatableTitle: i18next.t("datatableTitle", {ns: "scatter"}),
+    datatable: {
+      title: i18next.t("datatableTitle", {ns: "scatter"})
+    },
     filterData: function(data) {
       return data.oldfaithful;
     },
