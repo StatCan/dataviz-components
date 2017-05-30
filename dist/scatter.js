@@ -62,7 +62,7 @@ this.scatterChart = function(svg, settings) {
     draw = function() {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData(sett.data, "chart") : sett.data,
+          sett.filterData.call(sett, sett.data) : sett.data,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
