@@ -298,7 +298,7 @@ this.scatterChart = function(svg, settings) {
 
   process = function() {
     draw.apply(rtnObj);
-    if (mergedSettings.datatTable === false) return;
+    if (mergedSettings.dataTable === false) return;
     drawTable.apply(rtnObj);
   };
   if (!mergedSettings.data) {
