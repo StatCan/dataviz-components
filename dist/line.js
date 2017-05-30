@@ -76,7 +76,7 @@ this.lineChart = function(svg, settings) {
           .attr("class", "data");
       }
 
-      lines = dataLayer.selectAll(".line")
+      lines = dataLayer.selectAll(".dline")
         .data(data);
 
       lines
