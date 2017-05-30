@@ -45,7 +45,10 @@ this.lineChart = function(svg, settings) {
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
-        labelY = function(d) { return y(mergedSettings.y.getValue.call(sett, d)); },
+        labelY = function(d) {
+          var points = mergedSettings.z.getDataPoints(d);
+          return y(mergedSettings.y.getValue.call(sett, points[points.length - 1]));
+        },
         classFn = function(d,i){
           var cl = "dline dline" + (i + 1);
 
@@ -94,11 +97,6 @@ this.lineChart = function(svg, settings) {
           .enter()
           .append("text")
             .text(sett.z.getText.bind(sett))
-            .datum(function(d){
-              var points = sett.z.getDataPoints.call(sett, d);
-              return points[points.length - 1];
-
-            })
             .attr("aria-hidden", "true")
             .attr("class", "label")
             .attr("fill", "#000")
