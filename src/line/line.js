@@ -207,6 +207,7 @@ this.lineChart = function(svg, settings) {
   };
 
   svg
+    .attr("height", outerHeight + "px")
     .attr("viewBox", "0 0 " + outerWidth + " " + outerHeight)
     .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("role", "img")

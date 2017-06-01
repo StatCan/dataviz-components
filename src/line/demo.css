@@ -30,3 +30,10 @@
 .dline7 {
 	stroke: #E474C2;
 }
+
+@media screen and (min-width:0\0) and (min-resolution: +72dpi) {
+  /* IE9+ CSS */
+  svg{
+		width: 100%;
+	}
+}
