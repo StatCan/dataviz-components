@@ -207,11 +207,14 @@ this.lineChart = function(svg, settings) {
   };
 
   svg
-    .attr("height", outerHeight + "px")
     .attr("viewBox", "0 0 " + outerWidth + " " + outerHeight)
     .attr("preserveAspectRatio", "xMidYMid meet")
     .attr("role", "img")
     .attr("aria-label", mergedSettings.altText);
+
+  if (svg.node().msContentZoomFactor) {
+    svg.attr("height", outerHeight);
+  }
 
   if (chartInner.empty()) {
     chartInner = svg.append("g")

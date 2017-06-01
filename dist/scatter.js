@@ -292,6 +292,10 @@ this.scatterChart = function(svg, settings) {
     .attr("role", "img")
     .attr("aria-label", mergedSettings.altText);
 
+  if (svg.node().msContentZoomFactor) {
+    svg.attr("height", outerHeight);
+  }
+
   if (chartInner.empty()) {
     chartInner = svg.append("g")
       .attr("transform", "translate(" + mergedSettings.margin.left + "," + mergedSettings.margin.top + ")");
