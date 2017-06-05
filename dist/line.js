@@ -40,7 +40,7 @@ this.lineChart = function(svg, settings) {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData.call(sett, sett.data) : sett.data,
-        showLabel = sett.showLabels || data.length > 1,
+        showLabel = sett.showLabels !== undefined ? sett.showLabels : data.length > 1,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
