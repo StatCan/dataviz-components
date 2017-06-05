@@ -90,8 +90,12 @@ this.lineChart = function(svg, settings) {
         .transition(transition)
         .attr("d", lineFn);
 
+      lines
+        .exit()
+          .remove();
+
+      labels = dataLayer.selectAll(".label");
       if(showLabel) {
-        labels = dataLayer.selectAll(".label");
         labels
           .data(data)
           .enter()
@@ -108,7 +112,15 @@ this.lineChart = function(svg, settings) {
         labels
           .transition(transition)
           .attr("y", labelY);
+
+        labels
+          .exit()
+            .remove();
+      } else {
+        labels
+          .remove();
       }
+
 
       if (xAxisObj.empty()) {
         xAxisObj = chartInner.append("g")

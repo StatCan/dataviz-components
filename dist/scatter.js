@@ -164,7 +164,6 @@ this.scatterChart = function(svg, settings) {
         .exit()
           .remove();
 
-
       labels = dataLayer.selectAll(".label");
       if (sett.showLabels) {
         labels

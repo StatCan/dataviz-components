@@ -99,6 +99,10 @@ this.areaChart = function(svg, settings) {
         .transition(transition)
         .attr("d", area);
 
+      areas
+        .exit()
+          .remove();
+
       labels = dataLayer.selectAll(".label");
       labels
         .data(stackData)
@@ -116,6 +120,10 @@ this.areaChart = function(svg, settings) {
       labels
         .transition(transition)
         .attr("y", labelY);
+
+      labels
+        .exit()
+          .remove();
 
       if (xAxisObj.empty()) {
         xAxisObj = chartInner.append("g")
