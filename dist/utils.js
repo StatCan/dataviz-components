@@ -32,9 +32,13 @@ window.i18n = (function() {
         });
       });
     },
-    getNumberFormatter: function(precision) {
+    getNumberFormatter: function(max_precision, min_precision) {
+      var max = max_precision || 0,
+        min = min_precision || max;
+
       var options = {
-        minimumFractionDigits: precision || 0
+        minimumFractionDigits: min,
+        maximumFractionDigits: max
       };
 
       try {
