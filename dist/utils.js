@@ -1,6 +1,9 @@
 (function() {
 window.i18n = (function() {
-  var lang = document.documentElement.lang;
+  var lang = document.documentElement.lang,
+    blankFormatter = {
+      format: function(d){return d;}
+    };
 
   return {
     lang: lang,
@@ -44,9 +47,14 @@ window.i18n = (function() {
       try {
         return new Intl.NumberFormat(lang, options);
       } catch (e) {
-        return {
-          format: function(d){return d;}
-        };
+        return blankFormatter;
+      }
+    },
+    getDateFormatter: function(options) {
+      try {
+        return new Intl.DateTimeFormat(lang, options);
+      } catch (e) {
+        return blankFormatter;
       }
     }
   };
