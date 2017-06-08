@@ -59,4 +59,53 @@ window.i18n = (function() {
     }
   };
 })();
+
+d3 = d3 || {};
+
+d3.stcExt = {
+  get5PointsInterpolation: function(negativeStartColor, negativeEndColor, neutralColor, positiveStartColor, positiveEndColor) {
+    var rgbNegStart = d3.rgb(negativeStartColor),
+      rgbNegEnd = d3.rgb(negativeEndColor),
+      rgbPosStart = d3.rgb(positiveStartColor),
+      rgbPosEnd = d3.rgb(positiveEndColor),
+      startColor, endColor;
+
+    return function(t) {
+      if (t === 0) {
+        return neutralColor;
+      } else if (t > 0) {
+        startColor = rgbPosStart;
+        endColor = rgbPosEnd;
+      } else {
+        startColor = rgbNegStart;
+        endColor = rgbNegEnd;
+      }
+
+      return d3.rgb.apply(null, ["r", "g", "b"].map(function(channel) {
+        var diff = endColor[channel] - startColor[channel];
+        return startColor[channel] + diff * Math.abs(t);
+      }));
+    };
+  },
+  get3PointsInterpolation: function(negativeColor, neutralColor, positiveColor, deadzone) {
+    deadzone = deadzone || 0;
+    return function(t) {
+      var color;
+
+      if (t === 0) {
+        return neutralColor;
+      } else {
+        color = t > 0 ? positiveColor : negativeColor;
+      }
+
+      //TODO: Add support for other color methods
+      return d3.rgb.apply(null, ["r", "g", "b"].map(function(channel) {
+        var diff = color[channel] - neutralColor[channel],
+          newDeadzone = diff > 0 ? deadzone : -deadzone;
+        diff -= newDeadzone;
+        return neutralColor[channel] + diff * Math.abs(t) + newDeadzone;
+      }));
+    };
+  }
+};
 })();
