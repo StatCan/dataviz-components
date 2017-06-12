@@ -88,24 +88,31 @@ d3.stcExt = {
     };
   },
   get3PointsInterpolation: function(negativeColor, neutralColor, positiveColor, deadzone) {
+    var rgbNeutral = d3.rgb(neutralColor),
+      rgbNegEnd = d3.rgb(negativeColor),
+      rgbPosEnd = d3.rgb(positiveColor),
+      addDeadzone = function(color) {
+        return d3.rgb.apply(null, ["r", "g", "b"].map(function(channel) {
+          var currentChannel = neutralColor[channel],
+            diff = color[channel] - currentChannel,
+            newDeadzone;
+
+          if ((diff < 0  && diff > -deadzone) || diff > 0 && diff < deadzone) {
+            newDeadzone = 0;
+          } else {
+            newDeadzone =  diff < 0 ? deadzone : -deadzone;
+          }
+
+          return rgbNeutral[channel] - newDeadzone;
+        }));
+      },
+      rgbNegStart, rgbPosStart;
+
     deadzone = deadzone || 0;
-    return function(t) {
-      var color;
 
-      if (t === 0) {
-        return neutralColor;
-      } else {
-        color = t > 0 ? positiveColor : negativeColor;
-      }
-
-      //TODO: Add support for other color methods
-      return d3.rgb.apply(null, ["r", "g", "b"].map(function(channel) {
-        var diff = color[channel] - neutralColor[channel],
-          newDeadzone = diff > 0 ? deadzone : -deadzone;
-        diff -= newDeadzone;
-        return neutralColor[channel] + diff * Math.abs(t) + newDeadzone;
-      }));
-    };
+    rgbNegStart =  addDeadzone(rgbNegEnd);
+    rgbPosStart =  addDeadzone(rgbPosEnd);
+    return d3.stcExt.get5PointsInterpolation(rgbNegStart, rgbNegEnd, neutralColor, rgbPosStart, rgbPosEnd);
   }
 };
 })();
