@@ -35,7 +35,7 @@ window.i18n = (function() {
         });
       });
     },
-    getNumberFormatter: function(max_precision, min_precision) {
+    getNumberFormatter: function(min_precision, max_precision) {
       var max = max_precision || 0,
         min = min_precision || max;
 
