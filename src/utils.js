@@ -120,12 +120,16 @@ d3.stcExt = {
       i, j, mysheet, myrules;
     for ( i = 0; i < document.styleSheets.length; i++) {
       mysheet = document.styleSheets[i];
-      myrules = mysheet.cssRules ? mysheet.cssRules : mysheet.rules;
-      for (j = 0; j < myrules.length; j++) {
-        if (myrules[j].selectorText &&
-            myrules[j].selectorText.toLowerCase() === selector) {
-          value =  myrules[j].style[style];
+      try {
+        myrules = mysheet.cssRules ? mysheet.cssRules : mysheet.rules;
+        for (j = 0; j < myrules.length; j++) {
+          if (myrules[j].selectorText &&
+              myrules[j].selectorText.toLowerCase() === selector) {
+            value =  myrules[j].style[style];
+          }
         }
+      } catch(e) {
+        continue;
       }
     }
     return value;
