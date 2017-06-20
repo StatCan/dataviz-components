@@ -113,6 +113,22 @@ d3.stcExt = {
     rgbNegStart =  addDeadzone(rgbNegEnd);
     rgbPosStart =  addDeadzone(rgbPosEnd);
     return d3.stcExt.get5PointsInterpolation(rgbNegStart, rgbNegEnd, neutralColor, rgbPosStart, rgbPosEnd);
+  },
+  // Source: https://stackoverflow.com/questions/6338217/get-a-css-value-with-javascript
+  getStyleRuleValue: function (style, selector) {
+    var value = null,
+      i, j, mysheet, myrules;
+    for ( i = 0; i < document.styleSheets.length; i++) {
+      mysheet = document.styleSheets[i];
+      myrules = mysheet.cssRules ? mysheet.cssRules : mysheet.rules;
+      for (j = 0; j < myrules.length; j++) {
+        if (myrules[j].selectorText &&
+            myrules[j].selectorText.toLowerCase() === selector) {
+          value =  myrules[j].style[style];
+        }
+      }
+    }
+    return value;
   }
 };
 })();
