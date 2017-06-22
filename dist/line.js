@@ -1,8 +1,8 @@
 (function(extend) {
 var defaults = {
   margin: {
-    top: 0,
-    right: 0,
+    top: 10,
+    right: 10,
     bottom: 30,
     left: 50
   },
