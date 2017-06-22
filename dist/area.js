@@ -131,7 +131,7 @@ this.areaChart = function(svg, settings) {
         .attr("aria-hidden", "true")
         .attr("transform", "translate(0," + innerHeight + ")");
 
-        xAxisObj.call(xAxis)
+        xAxisObj
           .append("text")
             .attr("class", "chart-label")
             .attr("fill", "#000")
@@ -140,13 +140,14 @@ this.areaChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.x.label);
       }
+      xAxisObj.call(xAxis);
 
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
           .attr("class", "y axis")
           .attr("aria-hidden", "true");
 
-        yAxisObj.call(yAxis)
+        yAxisObj
           .append("text")
             .attr("class", "chart-label")
             .attr("fill", "#000")
@@ -156,6 +157,7 @@ this.areaChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.y.label);
       }
+      yAxisObj.call(yAxis);
     },
     drawTable = function() {
       var sett = this.settings,
