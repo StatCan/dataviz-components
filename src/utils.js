@@ -35,9 +35,9 @@ window.i18n = (function() {
         });
       });
     },
-    getNumberFormatter: function(min_precision, max_precision) {
-      var max = max_precision || 0,
-        min = min_precision || max;
+    getNumberFormatter: function() {
+      var max = arguments.length > 1 ? arguments[1] : arguments[0] || 0,
+        min = arguments[0] || 0;
 
       var options = {
         minimumFractionDigits: min,
