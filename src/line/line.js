@@ -127,30 +127,32 @@ this.lineChart = function(svg, settings) {
         .attr("class", "x axis")
         .attr("aria-hidden", "true")
         .attr("transform", "translate(0," + innerHeight + ")");
+
+        xAxisObj.call(xAxis)
+          .append("text")
+            .attr("class", "chart-label")
+            .attr("fill", "#000")
+            .attr("x", innerWidth)
+            .attr("dy", "-0.5em")
+            .attr("text-anchor", "end")
+            .text(settings.x.label);
       }
-      xAxisObj.call(xAxis)
-        .append("text")
-          .attr("class", "chart-label")
-          .attr("fill", "#000")
-          .attr("x", innerWidth)
-          .attr("dy", "-0.5em")
-          .attr("text-anchor", "end")
-          .text(settings.x.label);
 
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
           .attr("class", "y axis")
           .attr("aria-hidden", "true");
+
+        yAxisObj.call(yAxis)
+          .append("text")
+            .attr("class", "chart-label")
+            .attr("fill", "#000")
+            .attr("y", "0")
+            .attr("transform", "rotate(-90)")
+            .attr("dy", "1.5em")
+            .attr("text-anchor", "end")
+            .text(settings.y.label);
       }
-      yAxisObj.call(yAxis)
-        .append("text")
-          .attr("class", "chart-label")
-          .attr("fill", "#000")
-          .attr("y", "0")
-          .attr("transform", "rotate(-90)")
-          .attr("dy", "1.5em")
-          .attr("text-anchor", "end")
-          .text(settings.y.label);
     },
     drawTable = function() {
       var sett = this.settings,
