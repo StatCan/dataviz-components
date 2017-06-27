@@ -36,8 +36,8 @@ window.i18n = (function() {
       });
     },
     getNumberFormatter: function() {
-      var max = arguments.length > 1 ? arguments[1] : arguments[0] || 0,
-        min = arguments[0] || 0;
+      var min = arguments[0] || 0,
+        max = arguments.length > 1 ? arguments[1] : min;
 
       var options = {
         minimumFractionDigits: min,
