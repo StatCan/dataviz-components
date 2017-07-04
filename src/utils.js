@@ -133,6 +133,32 @@ d3.stcExt = {
       }
     }
     return value;
+  },
+
+  getSymbol: function(def) {
+    if (!def.id) {
+      def.id = (+new Date).toString();
+    }
+    var appendSymbolTo = function(el) {
+        var symbol = el.append("symbol")
+          .attr("id", def.id);
+
+        if (def.viewBox) {
+          symbol.attr("viewBox", Array.isArray(def.viewBox) ? def.viewBox.join(" ") : def.viewBox);
+        }
+
+        symbol.append("path")
+          .attr("d", def.d);
+        return symbol;
+      },
+      appendReferenceTo = function(el) {
+        return el.append("use")
+          .attr("href", "#" + def.id);
+      };
+    return {
+      appendSymbolTo: appendSymbolTo.bind(def),
+      appendReferenceTo: appendReferenceTo.bind(def)
+    };
   }
 };
 
