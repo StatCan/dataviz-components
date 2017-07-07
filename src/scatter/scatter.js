@@ -308,6 +308,7 @@ this.scatterChart = function(svg, settings) {
     draw.apply(rtnObj);
     if (mergedSettings.datatable === false) return;
     drawTable.apply(rtnObj);
+    d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
     d3.json(mergedSettings.url, function(error, data) {

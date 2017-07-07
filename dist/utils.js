@@ -159,6 +159,35 @@ d3.stcExt = {
       appendSymbolTo: appendSymbolTo.bind(def),
       appendReferenceTo: appendReferenceTo.bind(def)
     };
+  },
+  addIEShim: function(svg, height, width) {
+    if (svg.node().msContentZoomFactor && svg.classed("svg-shimmed", false)) {
+      svg.each(function() {
+        var el = this,
+          fn = function() {
+            return el;
+          },
+          shim = d3.select(el.parentNode)
+            .insert("div", fn)
+              .attr("class", "svg-shim-container")
+              .style("position", "relative");
+
+        shim.append(fn);
+        shim.append("canvas")
+          .attr("class", "svg-shim")
+          .attr("height", height)
+          .attr("width", width)
+          .style("width", "100%");
+      });
+
+      svg
+        .classed("svg-shimmed", false)
+        .style("height", "100%")
+        .style("left", "0")
+        .style("position", "absolute")
+        .style("top", "0")
+        .style("width", "100%");
+    }
   }
 };
 
