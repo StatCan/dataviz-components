@@ -161,7 +161,7 @@ d3.stcExt = {
     };
   },
   addIEShim: function(svg, height, width) {
-    if (svg.node().msContentZoomFactor && svg.classed("svg-shimmed", false)) {
+    if (svg.node().msContentZoomFactor && svg.classed("svg-shimmed") === false) {
       svg.each(function() {
         var el = this,
           fn = function() {
@@ -181,7 +181,7 @@ d3.stcExt = {
       });
 
       svg
-        .classed("svg-shimmed", false)
+        .classed("svg-shimmed", true)
         .style("height", "100%")
         .style("left", "0")
         .style("position", "absolute")
