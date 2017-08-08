@@ -77,7 +77,7 @@ this.lineChart = function(svg, settings) {
       }
 
       lines = dataLayer.selectAll(".dline")
-        .data(data);
+        .data(data, sett.z.getId.bind(sett));
 
       lines
         .enter()
@@ -93,12 +93,21 @@ this.lineChart = function(svg, settings) {
       lines
         .exit()
           .remove();
+      labels = dataLayer.selectAll(".label")
+        .data(
+          function() {
+            if (typeof showLabel === "function") {
+              return data.filter(showLabel.bind(sett));
+            } else if (showLabel === false) {
+              return [];
+            }
+            return data;
+          }()
+          , sett.z.getId.bind(sett)
+        );
 
-      labels = dataLayer.selectAll(".label");
-      if(showLabel) {
-        labels
-          .data(data)
-          .enter()
+      labels
+        .enter()
           .append("text")
             .text(sett.z.getText.bind(sett))
             .attr("aria-hidden", "true")
@@ -109,18 +118,13 @@ this.lineChart = function(svg, settings) {
             .attr("dy", "1em")
             .attr("text-anchor", "end");
 
-        labels
-          .transition(transition)
-          .attr("y", labelY);
+      labels
+        .transition(transition)
+        .attr("y", labelY);
 
-        labels
-          .exit()
-            .remove();
-      } else {
-        labels
+      labels
+        .exit()
           .remove();
-      }
-
 
       if (xAxisObj.empty()) {
         xAxisObj = chartInner.append("g")

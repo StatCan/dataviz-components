@@ -50,13 +50,16 @@ i18n.load(["i18n"], function() {
 
     z: {
       label: i18next.t("z_label", {ns: "line"}),
+      getId: function(d) {
+        return d.id;
+      },
       getKeys: function(d) {
         var keys = Object.keys(d);
         keys.splice(keys.indexOf("keys"),1);
         return keys;
       },
-      getClass: function(d) {
-        return d.id;
+      getClass: function() {
+        return this.z.getId.apply(this, arguments);
       },
       getDataPoints: function(d) {
         return d.values;
