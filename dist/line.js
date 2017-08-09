@@ -223,6 +223,8 @@ this.lineChart = function(svg, settings) {
 
   rtnObj = {
     settings: mergedSettings,
+    x: x,
+    y: y,
     svg: svg
   };
 
