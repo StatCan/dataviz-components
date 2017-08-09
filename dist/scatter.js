@@ -24,10 +24,6 @@ this.scatterChart = function(svg, settings) {
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
-    x = d3.scaleLinear().range([0, innerWidth]),
-    y = d3.scaleLinear().range([innerHeight, 0]),
-    xAxis = d3.axisBottom(x).ticks(mergedSettings.x.ticks),
-    yAxis = d3.axisLeft(y).ticks(mergedSettings.y.ticks),
     chartInner = svg.select("g"),
     transition = d3.transition()
       .duration(1000)
@@ -134,6 +130,9 @@ this.scatterChart = function(svg, settings) {
       xDomain[1] += padding;
       yDomain[1] += padding;
 
+      x = rtnObj.x = d3.scaleLinear().range([0, innerWidth]);
+      y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
+
       x.domain(xDomain);
       y.domain(yDomain);
 
@@ -207,7 +206,10 @@ this.scatterChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.x.label);
       }
-      xAxisObj.call(xAxis);
+      xAxisObj.call(
+        d3.axisBottom(x)
+          .ticks(mergedSettings.x.ticks)
+      );
 
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
@@ -224,7 +226,10 @@ this.scatterChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.y.label);
       }
-      yAxisObj.call(yAxis);
+      yAxisObj.call(
+        d3.axisLeft(y)
+          .ticks(mergedSettings.y.ticks)
+      );
     },
     drawTable = function() {
       var sett = this.settings,
@@ -281,12 +286,10 @@ this.scatterChart = function(svg, settings) {
         }
       }
     },
-    rtnObj, process;
+    x, y, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
-    x: x,
-    y: y,
     svg: svg
   };
 

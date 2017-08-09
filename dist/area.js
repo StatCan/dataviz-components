@@ -37,10 +37,6 @@ this.areaChart = function(svg, settings) {
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
-    x = d3.scaleTime().range([0, innerWidth]),
-    y = d3.scaleLinear().range([innerHeight, 0]),
-    xAxis = d3.axisBottom(x).ticks(mergedSettings.x.ticks),
-    yAxis = d3.axisLeft(y).ticks(mergedSettings.y.ticks),
     chartInner = svg.select("g"),
     area = d3.area()
       .x(function(d) {
@@ -59,6 +55,9 @@ this.areaChart = function(svg, settings) {
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
+        getXScale = function() {
+          return d3.scaleTime();
+        },
         labelY = function(d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); },
         keys = sett.z.getKeys.call(sett, data),
         classFn = function(d,i){
@@ -72,11 +71,15 @@ this.areaChart = function(svg, settings) {
         },
         stackData, areas, labels;
 
+      x = rtnObj.x = getXScale().range([0, innerWidth]);
+      y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
+
       x.domain(d3.extent(data, sett.x.getValue.bind(sett)));
       y.domain([
         0,
         d3.max(data, sett.y.getTotal.bind(sett))
       ]);
+
       stackData = stack
         .keys(keys)
         .value(sett.y.getValue.bind(sett))(data);
@@ -140,7 +143,10 @@ this.areaChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.x.label);
       }
-      xAxisObj.call(xAxis);
+      xAxisObj.call(
+        d3.axisBottom(x)
+          .ticks(mergedSettings.x.ticks)
+      );
 
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
@@ -157,7 +163,10 @@ this.areaChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.y.label);
       }
-      yAxisObj.call(yAxis);
+      yAxisObj.call(
+        d3.axisLeft(y)
+          .ticks(mergedSettings.y.ticks)
+        );
     },
     drawTable = function() {
       var sett = this.settings,
@@ -221,7 +230,7 @@ this.areaChart = function(svg, settings) {
         }
       }
     },
-    rtnObj, process;
+    x, y, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,

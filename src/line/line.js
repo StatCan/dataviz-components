@@ -22,10 +22,6 @@ this.lineChart = function(svg, settings) {
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
-    x = d3.scaleTime().range([0, innerWidth]),
-    y = d3.scaleLinear().range([innerHeight, 0]),
-    xAxis = d3.axisBottom(x).ticks(mergedSettings.x.ticks),
-    yAxis = d3.axisLeft(y).ticks(mergedSettings.y.ticks),
     chartInner = svg.select("g"),
     line = d3.line()
       .x(function(d) {
@@ -44,6 +40,9 @@ this.lineChart = function(svg, settings) {
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
+        getXScale = function() {
+          return d3.scaleTime();
+        },
         labelX = innerWidth,
         labelY = function(d) {
           var points = mergedSettings.z.getDataPoints(d);
@@ -65,6 +64,9 @@ this.lineChart = function(svg, settings) {
           return sett.z.getDataPoints.call(sett, d);
         })),
         lines, labels;
+
+      x = rtnObj.x = getXScale().range([0, innerWidth]);
+      y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
 
       x.domain(d3.extent(flatData, sett.x.getValue.bind(sett)));
       y.domain([
@@ -141,7 +143,10 @@ this.lineChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.x.label);
       }
-      xAxisObj.call(xAxis);
+      xAxisObj.call(
+        d3.axisBottom(x)
+          .ticks(mergedSettings.x.ticks)
+      );
 
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
@@ -158,7 +163,10 @@ this.lineChart = function(svg, settings) {
             .attr("text-anchor", "end")
             .text(settings.y.label);
       }
-      yAxisObj.call(yAxis);
+      yAxisObj.call(
+        d3.axisLeft(y)
+          .ticks(mergedSettings.y.ticks)
+      );
     },
     drawTable = function() {
       var sett = this.settings,
@@ -219,7 +227,7 @@ this.lineChart = function(svg, settings) {
         }
       }
     },
-    rtnObj, process;
+    x, y, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
