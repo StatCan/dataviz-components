@@ -39,6 +39,9 @@ i18n.load(["i18n"], function() {
 
     z: {
       label: i18next.t("z_label", {ns: "area"}),
+      getId: function(d) {
+        return d.key;
+      },
       getKeys: function(object) {
         var sett = this,
           keys = Object.keys(object[0]);
@@ -46,8 +49,8 @@ i18n.load(["i18n"], function() {
         keys.splice(keys.indexOf(sett.y.totalProperty),1);
         return keys;
       },
-      getClass: function(d) {
-        return d.key;
+      getClass: function() {
+        return this.z.getId.apply(this, arguments);
       },
       getText: function(d) {
         return i18next.t(d.key, {ns: "area"});

@@ -87,7 +87,7 @@ this.areaChart = function(svg, settings) {
       }
 
       areas = dataLayer.selectAll(".area")
-        .data(stackData);
+        .data(stackData, sett.z.getId.bind(sett));
 
       areas
         .enter()
