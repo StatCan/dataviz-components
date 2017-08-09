@@ -143,7 +143,7 @@ this.scatterChart = function(svg, settings) {
       }
 
       scatter = dataLayer.selectAll(".point")
-        .data(data);
+        .data(data, sett.z.getId.bind(sett));
 
       scatter
         .enter()

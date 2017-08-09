@@ -31,8 +31,11 @@ i18n.load(["i18n"], function() {
 
     z: {
       label: i18next.t("z_label", {ns: "scatter"}),
-      getText: function(d) {
+      getId: function(d) {
         return d.id;
+      },
+      getText: function(d) {
+        return this.z.getId.apply(this, arguments);
       }
     },
     width: 900,
