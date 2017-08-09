@@ -44,7 +44,7 @@ this.lineChart = function(svg, settings) {
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
-        labelX = innerWidth - 6,
+        labelX = innerWidth,
         labelY = function(d) {
           var points = mergedSettings.z.getDataPoints(d);
           return y(mergedSettings.y.getValue.call(sett, points[points.length - 1]));
@@ -115,7 +115,7 @@ this.lineChart = function(svg, settings) {
             .attr("fill", "#000")
             .attr("x", labelX)
             .attr("y", labelY)
-            .attr("dy", "1em")
+
             .attr("text-anchor", "end");
 
       labels
