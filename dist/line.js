@@ -155,11 +155,12 @@ this.lineChart = function(svg, settings) {
             .attr("x", innerWidth)
             .attr("dy", "-0.5em")
             .attr("text-anchor", "end")
-            .text(settings.x.label);
+            .text(sett.x.label);
       }
       xAxisObj.call(
         d3.axisBottom(x)
-          .ticks(mergedSettings.x.ticks)
+          .ticks(sett.x.ticks)
+          .tickFormat(sett.x.getTickText ? sett.x.getTickText.bind(sett) : null)
       );
 
       if (yAxisObj.empty()) {
@@ -175,11 +176,11 @@ this.lineChart = function(svg, settings) {
             .attr("transform", "rotate(-90)")
             .attr("dy", "1.5em")
             .attr("text-anchor", "end")
-            .text(settings.y.label);
+            .text(sett.y.label);
       }
       yAxisObj.call(
         d3.axisLeft(y)
-          .ticks(mergedSettings.y.ticks)
+          .ticks(sett.y.ticks)
       );
     },
     drawTable = function() {
