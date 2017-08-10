@@ -8,7 +8,13 @@ var defaults = {
   },
   aspectRatio: 16 / 9,
   x: {
-    ticks: 5
+    ticks: 5,
+    getDomain: function(flatData) {
+      return d3.extent(flatData, this.x.getValue.bind(this));
+    },
+    getRange: function() {
+      return [0, this.innerWidth];
+    }
   },
   y: {
     ticks: 10,
@@ -41,7 +47,15 @@ this.lineChart = function(svg, settings) {
         yAxisObj = chartInner.select(".y.axis"),
         dataLayer = chartInner.select(".data"),
         getXScale = function() {
-          return d3.scaleTime();
+          switch(sett.x.type) {
+          case "linear":
+            return d3.scaleLinear();
+          case "ordinal":
+            return d3.scaleOrdinal();
+          default:
+            return d3.scaleTime();
+          }
+
         },
         labelX = innerWidth,
         labelY = function(d) {
@@ -65,10 +79,10 @@ this.lineChart = function(svg, settings) {
         })),
         lines, labels;
 
-      x = rtnObj.x = getXScale().range([0, innerWidth]);
+      x = rtnObj.x = getXScale().range(sett.x.getRange.call(sett, flatData));
       y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
 
-      x.domain(d3.extent(flatData, sett.x.getValue.bind(sett)));
+      x.domain(sett.x.getDomain.call(sett, flatData));
       y.domain([
         0,
         d3.max(flatData, sett.y.getValue.bind(sett))
