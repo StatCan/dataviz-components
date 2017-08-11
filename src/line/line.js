@@ -29,6 +29,7 @@ this.lineChart = function(svg, settings) {
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
     chartInner = svg.select("g"),
+    dataLayer = chartInner.select(".data"),
     line = d3.line()
       .x(function(d) {
         return x(mergedSettings.x.getValue.call(mergedSettings, d));
@@ -45,7 +46,6 @@ this.lineChart = function(svg, settings) {
         showLabel = sett.showLabels !== undefined ? sett.showLabels : data.length > 1,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
-        dataLayer = chartInner.select(".data"),
         getXScale = function() {
           switch(sett.x.type) {
           case "linear":
@@ -242,12 +242,14 @@ this.lineChart = function(svg, settings) {
         }
       }
     },
+    clear = function() {
+      dataLayer.remove();
+    },
     x, y, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
-    x: x,
-    y: y,
+    clear: clear,
     svg: svg
   };
 

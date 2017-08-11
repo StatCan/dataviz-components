@@ -25,6 +25,7 @@ this.scatterChart = function(svg, settings) {
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
     chartInner = svg.select("g"),
+    dataLayer = chartInner.select(".data"),
     transition = d3.transition()
       .duration(1000)
       .ease(d3.easeLinear),
@@ -61,7 +62,6 @@ this.scatterChart = function(svg, settings) {
           sett.filterData.call(sett, sett.data) : sett.data,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
-        dataLayer = chartInner.select(".data"),
         padding = 1 + sett.pointRadius / innerHeight,
         displayOnly = sett.displayOnly && typeof sett.displayOnly === "function" ?
           sett.displayOnly.call(sett, data) : null,
@@ -286,10 +286,14 @@ this.scatterChart = function(svg, settings) {
         }
       }
     },
+    clear = function() {
+      dataLayer.remove();
+    },
     x, y, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
+    clear: clear,
     svg: svg
   };
 

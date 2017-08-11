@@ -20,10 +20,10 @@ this.bubbleChart = function(svg, settings) {
     pack = d3.pack()
       .size([innerWidth, innerHeight]),
     chartInner = svg.select("g"),
+    dataLayer = chartInner.select(".data"),
     transition = d3.transition()
       .duration(1000),
     getSelection = function() {
-      var dataLayer = chartInner.select(".data");
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")
           .attr("class", "data")
@@ -126,10 +126,14 @@ this.bubbleChart = function(svg, settings) {
     drawTable = function() {
 
     },
+    clear = function() {
+      dataLayer.remove();
+    },
     rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
+    clear: clear,
     svg: svg
   };
 

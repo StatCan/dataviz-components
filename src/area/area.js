@@ -38,6 +38,7 @@ this.areaChart = function(svg, settings) {
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
     chartInner = svg.select("g"),
+    dataLayer = chartInner.select(".data"),
     area = d3.area()
       .x(function(d) {
         return x(mergedSettings.x.getValue(d.data));
@@ -53,7 +54,6 @@ this.areaChart = function(svg, settings) {
           sett.filterData.call(sett, sett.data) : sett.data,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
-        dataLayer = chartInner.select(".data"),
         labelX = innerWidth - 6,
         getXScale = function() {
           return d3.scaleTime();
@@ -230,12 +230,14 @@ this.areaChart = function(svg, settings) {
         }
       }
     },
+    clear = function() {
+      dataLayer.remove();
+    },
     x, y, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
-    x: x,
-    y: y,
+    clear: clear,
     svg: svg
   };
 
