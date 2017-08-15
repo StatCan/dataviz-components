@@ -188,16 +188,41 @@ this.lineChart = function(svg, settings) {
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData(sett.data, "table") : sett.data,
         parent = svg.select(function(){return this.parentNode;}),
-        details = parent
-          .select("details"),
+        details = parent.select("details"),
         keys = sett.z.getKeys.call(sett, data),
         columns = sett.z.getDataPoints.call(sett, data[keys[0]]),
-        table, header, body, dataRows, dataRow, c;
+        headerText = (sett.x.getText || sett.x.getValue).bind(sett),
+        setRow = function(d) {
+          var row = d3.select(this),
+            cells = row.selectAll("*")
+              .data(d),
+            getText = function(d) {
+              return d;
+            };
+
+          cells
+            .enter()
+              .append(function(d, i) {
+                return  document.createElement(i === 0 ? "th" : "td");
+              })
+              .text(getText);
+
+          cells.text(getText);
+
+          cells
+            .exit()
+              .remove();
+        },
+        table, header, headerCols, body, dataRows;
 
       if (details.empty()) {
         details = parent
           .append("details")
             .attr("class", "chart-data-table");
+
+        if ($) {
+          $(".chart-data-table summary").trigger("wb-init.wb-details");
+        }
 
         details.append("summary")
           .attr("id", "chrt-dt-tbl")
@@ -210,37 +235,44 @@ this.lineChart = function(svg, settings) {
         body = table.append("tbody");
 
         header.append("td");
-
-        for(c = 0; c < columns.length; c++) {
-          header.append("th")
-            .datum(columns[c])
-            .text((sett.x.getText || sett.x.getValue).bind(sett));
-        }
-
-        dataRows = body.selectAll("tr")
-          .data(data);
-
-        dataRow = dataRows
-          .enter()
-            .append("tr");
-
-        dataRow
-          .append("th")
-            .text((sett.z.getText || sett.z.getValue).bind(sett));
-
-        for(c = 0; c < columns.length; c++) {
-          dataRow
-            .append("td")
-              .datum(function(d) {
-                return sett.z.getDataPoints.call(sett, d)[c];
-              })
-              .text((sett.y.getText ? sett.y.getText : sett.y.getValue).bind(sett));
-        }
-
-        if ($) {
-          $(".chart-data-table summary").trigger("wb-init.wb-details");
-        }
+      } else {
+        header = details.select("thead tr");
+        body = details.select("tbody");
       }
+
+      headerCols = header.selectAll("th")
+        .data(columns);
+
+      headerCols
+        .enter()
+          .append("th")
+          .text(headerText);
+
+      headerCols
+        .text(headerText);
+
+      headerCols
+        .exit()
+        .remove();
+
+      dataRows = body.selectAll("tr")
+        .data(data.map(function() {
+          var arr = [(sett.z.getText || sett.z.getValue).apply(sett, arguments)]
+              .concat(sett.z.getDataPoints.apply(sett, arguments).map((sett.y.getText ? sett.y.getText : sett.y.getValue).bind(sett)));
+          return arr;
+        }));
+
+      dataRows
+        .enter()
+          .append("tr")
+            .each(setRow);
+
+      dataRows
+        .each(setRow);
+
+      dataRows
+        .exit()
+          .remove();
     },
     clear = function() {
       dataLayer.remove();
