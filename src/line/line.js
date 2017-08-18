@@ -225,8 +225,7 @@ this.lineChart = function(svg, settings) {
         }
 
         details.append("summary")
-          .attr("id", "chrt-dt-tbl")
-          .text(sett.datatable.title || "Data");
+          .attr("id", "chrt-dt-tbl");
 
         table = details
           .append("table")
@@ -239,6 +238,8 @@ this.lineChart = function(svg, settings) {
         header = details.select("thead tr");
         body = details.select("tbody");
       }
+
+      details.select("summary").text(sett.datatable.title || "Data");
 
       headerCols = header.selectAll("th")
         .data(columns);
