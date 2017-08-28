@@ -35,14 +35,16 @@ window.i18n = (function() {
         });
       });
     },
-    getNumberFormatter: function() {
-      var min = arguments[0] || 0,
-        max = arguments.length > 1 ? arguments[1] : min;
+    getNumberFormatter: function(options) {
+      var min;
 
-      var options = {
-        minimumFractionDigits: min,
-        maximumFractionDigits: max
-      };
+      if (typeof options !== "object") {
+        min = arguments[0] || 0;
+        options = {
+          minimumFractionDigits: min,
+          maximumFractionDigits: arguments.length > 1 ? arguments[1] : min
+        };
+      }
 
       try {
         return new Intl.NumberFormat(lang, options);
