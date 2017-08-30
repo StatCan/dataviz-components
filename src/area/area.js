@@ -172,7 +172,9 @@ this.areaChart = function(svg, settings) {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData(sett.data, "table") : sett.data,
-        parent = svg.select(function(){return this.parentNode;}),
+        parent = svg.select(
+          svg.classed("svg-shimmed") ? function(){return this.parentNode.parentNode;} : function(){return this.parentNode;}
+        ),
         details = parent
           .select("details"),
         keys = sett.z.getKeys.call(sett, data),
