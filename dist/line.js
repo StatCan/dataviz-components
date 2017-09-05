@@ -185,6 +185,7 @@ this.lineChart = function(svg, settings) {
     },
     drawTable = function() {
       var sett = this.settings,
+        summaryId = "chrt-dt-tbl",
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData(sett.data, "table") : sett.data,
         parent = svg.select(
@@ -227,11 +228,12 @@ this.lineChart = function(svg, settings) {
         }
 
         details.append("summary")
-          .attr("id", "chrt-dt-tbl");
+          .attr("id", summaryId);
 
         table = details
           .append("table")
-            .attr("class", "table");
+            .attr("class", "table")
+            .attr("aria-labelledby", summaryId);
         header = table.append("thead").append("tr");
         body = table.append("tbody");
 
