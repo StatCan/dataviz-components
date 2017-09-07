@@ -146,6 +146,7 @@ this.areaChart = function(svg, settings) {
       xAxisObj.call(
         d3.axisBottom(x)
           .ticks(mergedSettings.x.ticks)
+          .tickFormat(sett.x.getTickText ? sett.x.getTickText.bind(sett) : null)
       );
 
       if (yAxisObj.empty()) {
@@ -166,6 +167,7 @@ this.areaChart = function(svg, settings) {
       yAxisObj.call(
         d3.axisLeft(y)
           .ticks(mergedSettings.y.ticks)
+          .tickFormat(sett.y.getTickText ? sett.y.getTickText.bind(sett) : null)
         );
     },
     drawTable = function() {

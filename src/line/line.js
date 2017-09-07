@@ -181,6 +181,7 @@ this.lineChart = function(svg, settings) {
       yAxisObj.call(
         d3.axisLeft(y)
           .ticks(sett.y.ticks)
+          .tickFormat(sett.y.getTickText ? sett.y.getTickText.bind(sett) : null)
       );
     },
     drawTable = function() {
