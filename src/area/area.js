@@ -231,7 +231,7 @@ this.areaChart = function(svg, settings) {
               });
         }
 
-        if ($) {
+        if ($ || wb) {
           $(".chart-data-table summary").trigger("wb-init.wb-details");
         }
       }
@@ -276,4 +276,4 @@ this.areaChart = function(svg, settings) {
   return rtnObj;
 };
 
-})(jQuery.extend);
+})(jQuery.extend, jQuery);

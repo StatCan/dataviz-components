@@ -7,7 +7,8 @@
       "d3": true,
       "i18n": true,
       "i18next": true,
-      "sgc": true
+      "sgc": true,
+      "wb": true
     },
     "extends": "eslint:recommended",
     "rules": {

@@ -224,10 +224,6 @@ this.lineChart = function(svg, settings) {
           .append("details")
             .attr("class", "chart-data-table");
 
-        if ($) {
-          $(".chart-data-table summary").trigger("wb-init.wb-details");
-        }
-
         details.append("summary")
           .attr("id", summaryId);
 
@@ -279,6 +275,10 @@ this.lineChart = function(svg, settings) {
       dataRows
         .exit()
           .remove();
+
+      if ($ || wb) {
+        $(".chart-data-table summary").trigger("wb-init.wb-details");
+      }
     },
     clear = function() {
       dataLayer.remove();
@@ -320,4 +320,4 @@ this.lineChart = function(svg, settings) {
   return rtnObj;
 };
 
-})(jQuery.extend);
+})(jQuery.extend, jQuery);

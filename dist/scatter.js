@@ -287,7 +287,7 @@ this.scatterChart = function(svg, settings) {
           .append("td")
             .text((settings.y.getText || settings.y.getValue).bind(sett) );
 
-        if ($) {
+        if ($ || wb) {
           $(".chart-data-table summary").trigger("wb-init.wb-details");
         }
       }
