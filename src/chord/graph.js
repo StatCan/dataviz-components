@@ -1,11 +1,13 @@
 (function(extend) {
 var defaults = {
   margin: {
-    top: 10,
-    right: 10,
-    bottom: 30,
-    left: 50
+    top: 2,
+    right: 2,
+    bottom: 2,
+    left: 2
   },
+  arcsWidth: 20,
+  padding: 0.03,
   aspectRatio: 16 / 9,
   width: 600
 };
@@ -21,7 +23,60 @@ this.chordChart = function(svg, settings) {
     draw = function() {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data;
+          sett.filterData.call(sett, sett.data) : sett.data,
+        outerRadius = Math.min(innerHeight, innerWidth) / 2,
+        innerRadius = outerRadius - sett.arcsWidth,
+        chord = d3.chord()
+          .padAngle(sett.padding),
+        arc = d3.arc()
+          .innerRadius(innerRadius)
+          .outerRadius(outerRadius),
+        ribbon = d3.ribbon()
+          .radius(innerRadius),
+        arcs, ribbons;
+
+      if (sett.startAngle) {
+        arc.startAngle(sett.startAngle);
+        ribbon.startAngle(sett.startAngle);
+      }
+
+      if (sett.endAngle) {
+        arc.endAngle(sett.endAngle);
+        ribbon.endAngle(sett.endAngle);
+      }
+
+      if (dataLayer.empty()) {
+        dataLayer = chartInner.append("g")
+          .attr("class", "data")
+          .attr("transform", "translate(" + innerWidth / 2 + "," + innerHeight / 2 + ")");
+      }
+      dataLayer.datum(chord(sett.getMatrix(data)));
+
+      arcs = dataLayer.append("g")
+        .attr("class", "arcs")
+        .selectAll("g")
+        .data(function(chords) { return chords.groups; });
+
+      arcs
+        .enter()
+        .append("g")
+        .each(function() {
+          d3.select(this).append("path")
+            .attr("d", arc);
+        });
+
+      ribbons = dataLayer.append("g")
+        .attr("class", "ribbons")
+        .selectAll("g")
+        .data(function(chords) { return chords; });
+
+      ribbons
+        .enter()
+        .append("g")
+        .each(function() {
+          d3.select(this).append("path")
+            .attr("d", ribbon);
+        });
 
     },
     rtnObj, process;
@@ -60,5 +115,3 @@ this.chordChart = function(svg, settings) {
 };
 
 })(jQuery.extend, jQuery);
-
-
