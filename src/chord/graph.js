@@ -26,6 +26,22 @@ this.chordChart = function(svg, settings) {
           sett.filterData.call(sett, sett.data) : sett.data,
         outerRadius = Math.min(innerHeight, innerWidth) / 2,
         innerRadius = outerRadius - sett.arcsWidth,
+        mapIndexes = function(d) {
+          var newD = chord(d.matrix),
+            g, group, c, ch;
+          for (g = 0; g < newD.groups.length; g++) {
+            group = newD.groups[g];
+            group.index = d.indexes[group.index];
+          }
+          for (c = 0; c < newD.length; c++) {
+            ch = newD[c];
+            ch.source.index = d.indexes[ch.source.index];
+            ch.source.subIndex = d.indexes[ch.source.subIndex];
+            ch.target.index = d.indexes[ch.target.index];
+            ch.target.subIndex = d.indexes[ch.target.subIndex];
+          }
+          return newD;
+        },
         chord = d3.chord()
           .padAngle(sett.padding),
         arc = d3.arc()
@@ -50,7 +66,8 @@ this.chordChart = function(svg, settings) {
           .attr("class", "data")
           .attr("transform", "translate(" + innerWidth / 2 + "," + innerHeight / 2 + ")");
       }
-      dataLayer.datum(chord(sett.getMatrix.call(sett, data)));
+      dataLayer.datum(mapIndexes(sett.getMatrix.call(sett, data)));
+
 
       arcs = dataLayer.append("g")
         .attr("class", "arcs")
@@ -60,10 +77,11 @@ this.chordChart = function(svg, settings) {
       arcs
         .enter()
         .append("g")
-        .each(function() {
-          d3.select(this).append("path")
-            .attr("d", arc);
-        });
+          .attr("class", sett.arcs ? sett.arcs.getClass.bind(sett) : null)
+          .each(function() {
+            d3.select(this).append("path")
+              .attr("d", arc);
+          });
 
       ribbons = dataLayer.append("g")
         .attr("class", "ribbons")
@@ -73,10 +91,11 @@ this.chordChart = function(svg, settings) {
       ribbons
         .enter()
         .append("g")
-        .each(function() {
-          d3.select(this).append("path")
-            .attr("d", ribbon);
-        });
+          .attr("class", sett.ribbons ? sett.ribbons.getClass.bind(sett) : null)
+          .each(function() {
+            d3.select(this).append("path")
+              .attr("d", ribbon);
+          });
 
     },
     rtnObj, process;
