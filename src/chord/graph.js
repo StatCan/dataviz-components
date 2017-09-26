@@ -36,13 +36,13 @@ this.chordChart = function(svg, settings) {
         arcs, ribbons;
 
       if (sett.startAngle) {
-        arc.startAngle(sett.startAngle);
-        ribbon.startAngle(sett.startAngle);
+        arc.startAngle(sett.startAngle.bind(sett));
+        ribbon.startAngle(sett.startAngle.bind(sett));
       }
 
       if (sett.endAngle) {
-        arc.endAngle(sett.endAngle);
-        ribbon.endAngle(sett.endAngle);
+        arc.endAngle(sett.endAngle.bind(sett));
+        ribbon.endAngle(sett.endAngle.bind(sett));
       }
 
       if (dataLayer.empty()) {
@@ -50,7 +50,7 @@ this.chordChart = function(svg, settings) {
           .attr("class", "data")
           .attr("transform", "translate(" + innerWidth / 2 + "," + innerHeight / 2 + ")");
       }
-      dataLayer.datum(chord(sett.getMatrix(data)));
+      dataLayer.datum(chord(sett.getMatrix.call(sett, data)));
 
       arcs = dataLayer.append("g")
         .attr("class", "arcs")
@@ -115,3 +115,4 @@ this.chordChart = function(svg, settings) {
 };
 
 })(jQuery.extend, jQuery);
+
