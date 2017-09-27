@@ -78,9 +78,24 @@ this.chordChart = function(svg, settings) {
         .enter()
         .append("g")
           .attr("class", sett.arcs ? sett.arcs.getClass.bind(sett) : null)
-          .each(function() {
-            d3.select(this).append("path")
-              .attr("d", arc);
+          .each(function(d, index) {
+            var parent = d3.select(this),
+              arcId = function() {
+                return "arc" + index;
+              };
+
+            parent.append("path")
+              .attr("d", arc)
+              .attr("id", arcId);
+
+            parent.append("text")
+              .attr("dy", 15)
+              .attr("dx", 5)
+                .append("textPath")
+                .attr("href", function() {
+                  return "#" + arcId.apply(this, arguments);
+                })
+                .text(sett.arcs.getText);
           });
 
       ribbons = dataLayer.append("g")
@@ -134,4 +149,3 @@ this.chordChart = function(svg, settings) {
 };
 
 })(jQuery.extend, jQuery);
-
