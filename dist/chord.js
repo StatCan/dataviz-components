@@ -83,7 +83,7 @@ this.chordChart = function(svg, settings) {
           .each(function(d, index) {
             var parent = d3.select(this),
               arcId = function() {
-                return "arc" + index;
+                return svg.attr("id") + "arc" + index;
               };
 
             parent.append("path")
