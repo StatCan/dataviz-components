@@ -1,0 +1,11 @@
+{
+	"fr": {
+		"bar": {
+			"x_label": "Groupes d'age",
+			"y_label": "Naissances par 1 000 femmes",
+			"CA": "Canada",
+			"MX": "Mexique",
+			"US": "États-Unis"
+		}
+	}
+}

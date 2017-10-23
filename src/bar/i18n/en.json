@@ -1,0 +1,11 @@
+{
+	"en": {
+		"bar": {
+			"x_label": "Age Groups",
+			"y_label": "Births per 1,000 women",
+			"CA": "Canada",
+			"MX": "Mexico",
+			"US": "United States of America"
+		}
+	}
+}

@@ -1,0 +1,23 @@
+rect {
+	fill: #000;
+}
+
+.CA {
+	fill: #b20c0c;
+}
+
+.MX {
+	fill: #0c56b2;
+}
+
+.US {
+	fill: #735184;
+}
+
+.other {
+	fill: #51800A;
+}
+
+.x.axis .tick text {
+	text-anchor: end;
+}
