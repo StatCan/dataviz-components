@@ -20,12 +20,20 @@ this.chordChart = function(svg, settings) {
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
     chartInner = svg.select("g"),
     dataLayer = chartInner.select(".data"),
+    transition = d3.transition()
+      .duration(1000),
     draw = function() {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData.call(sett, sett.data) : sett.data,
         outerDiameter = Math.min(innerHeight, innerWidth) / 2,
         innerDiameter = outerDiameter - sett.arcsWidth,
+        getArcsAngles = function(d) {
+          return [d.startAngle, d.endAngle];
+        },
+        getRibbonsAngles = function(d) {
+          return [d.source.startAngle, d.source.endAngle, d.target.startAngle, d.target.endAngle];
+        },
         mapIndexes = function(d) {
           var newD = chord(d.matrix),
             g, group, c, ch;
@@ -42,11 +50,22 @@ this.chordChart = function(svg, settings) {
           }
           return newD;
         },
+        arcTween = function(d) {
+          var newD = getArcsAngles(d),
+            oldD = this.parentNode._current,
+            i = d3.interpolate(oldD, newD);
+          this.parentNode._current = newD;
+          return function(t) {
+            var d = i(t);
+            return arc({
+              startAngle: d[0],
+              endAngle: d[1]
+            });
+          };
+        },
         arcsId = sett.arcs && sett.arcs.getId ? sett.arcs.getId.bind(sett) : null,
         arcsClass = sett.arcs && sett.arcs.getClass ? sett.arcs.getClass.bind(sett) : null,
         arcsText = sett.arcs && sett.arcs.getText ? sett.arcs.getText.bind(sett) : null,
-        ribbonsId = sett.ribbons && sett.ribbons.getId ? sett.ribbons.getId.bind(sett) : null,
-        ribbonsClass = sett.ribbons ? sett.ribbons.getClass.bind(sett) : null,
         textFit = function(d) {
           var textObj = d3.select(this),
             text = textObj.text(),
@@ -76,6 +95,27 @@ this.chordChart = function(svg, settings) {
           }
           return "0";
         },
+        ribbonTween = function(d) {
+          var newD = getRibbonsAngles(d),
+            oldD = this.parentNode._current,
+            i = d3.interpolate(oldD, newD);
+          this.parentNode._current = newD;
+          return function(t) {
+            var d = i(t);
+            return ribbon({
+              source: {
+                startAngle: d[0],
+                endAngle: d[1]
+              },
+              target: {
+                startAngle: d[2],
+                endAngle: d[3]
+              }
+            });
+          };
+        },
+        ribbonsId = sett.ribbons && sett.ribbons.getId ? sett.ribbons.getId.bind(sett) : null,
+        ribbonsClass = sett.ribbons ? sett.ribbons.getClass.bind(sett) : null,
         chord = d3.chord()
           .padAngle(sett.padding),
         arc = d3.arc()
@@ -131,7 +171,7 @@ this.chordChart = function(svg, settings) {
                 return svg.attr("id") + "arc" + index;
               },
               textObj;
-
+            this._current = getArcsAngles(d);
             parent.append("path")
               .attr("d", arc)
               .attr("id", arcId);
@@ -160,7 +200,8 @@ this.chordChart = function(svg, settings) {
             .style("opacity", hiddenText);
 
           parent.select("path")
-            .attr("d", arc);
+            .transition(transition)
+            .attrTween("d", arcTween);
         });
 
       arcs
@@ -172,7 +213,8 @@ this.chordChart = function(svg, settings) {
         .append("g")
           .attr("id", ribbonsId)
           .attr("class", ribbonsClass)
-          .each(function() {
+          .each(function(d) {
+            this._current = getRibbonsAngles(d);
             d3.select(this).append("path")
               .attr("d", ribbon);
           });
@@ -181,7 +223,8 @@ this.chordChart = function(svg, settings) {
         .attr("class", ribbonsClass)
         .each(function() {
           d3.select(this).select("path")
-            .attr("d", ribbon);
+            .transition(transition)
+            .attrTween("d", ribbonTween);
         });
 
       ribbons
