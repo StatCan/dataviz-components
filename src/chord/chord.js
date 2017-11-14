@@ -47,6 +47,35 @@ this.chordChart = function(svg, settings) {
         arcsText = sett.arcs && sett.arcs.getText ? sett.arcs.getText.bind(sett) : null,
         ribbonsId = sett.ribbons && sett.ribbons.getId ? sett.ribbons.getId.bind(sett) : null,
         ribbonsClass = sett.ribbons ? sett.ribbons.getClass.bind(sett) : null,
+        textFit = function(d) {
+          var textObj = d3.select(this),
+            text = textObj.text(),
+            textPath, textLength, angle, circumference;
+
+          if (text !== "") {
+            textPath = textObj.select("textPath").remove();
+            textObj.text(text);
+            textLength = this.getSubStringLength(0, text.length);
+            textObj
+              .text(null)
+              .insert(function() {
+                return textPath.node();
+              });
+            angle = (d.endAngle - d.startAngle) / (2 * Math.PI);
+            circumference = angle * 2 * Math.PI * innerDiameter / 2;
+
+            return textLength < circumference;
+          }
+
+          return null;
+        },
+        hiddenText = function() {
+          if (textFit.apply(this, arguments) === true) {
+            return "1";
+
+          }
+          return "0";
+        },
         chord = d3.chord()
           .padAngle(sett.padding),
         arc = d3.arc()
@@ -118,12 +147,18 @@ this.chordChart = function(svg, settings) {
                 return "#" + arcId.apply(this, arguments);
               })
               .text(arcsText);
+
+            textObj.style("opacity", hiddenText);
           });
 
       arcs
         .attr("class", arcsClass)
         .each(function() {
           var parent = d3.select(this);
+
+          parent.select("text")
+            .style("opacity", hiddenText);
+
           parent.select("path")
             .attr("d", arc);
         });
