@@ -24,8 +24,8 @@ this.chordChart = function(svg, settings) {
       var sett = this.settings,
         data = (sett.filterData && typeof sett.filterData === "function") ?
           sett.filterData.call(sett, sett.data) : sett.data,
-        outerRadius = Math.min(innerHeight, innerWidth) / 2,
-        innerRadius = outerRadius - sett.arcsWidth,
+        outerDiameter = Math.min(innerHeight, innerWidth) / 2,
+        innerDiameter = outerDiameter - sett.arcsWidth,
         mapIndexes = function(d) {
           var newD = chord(d.matrix),
             g, group, c, ch;
@@ -48,10 +48,10 @@ this.chordChart = function(svg, settings) {
         chord = d3.chord()
           .padAngle(sett.padding),
         arc = d3.arc()
-          .innerRadius(innerRadius)
-          .outerRadius(outerRadius),
+          .innerRadius(innerDiameter)
+          .outerRadius(outerDiameter),
         ribbon = d3.ribbon()
-          .radius(innerRadius),
+          .radius(innerDiameter),
         arcs, ribbons;
 
       if (sett.startAngle) {
@@ -84,20 +84,24 @@ this.chordChart = function(svg, settings) {
             var parent = d3.select(this),
               arcId = function() {
                 return svg.attr("id") + "arc" + index;
-              };
+              },
+              textObj;
 
             parent.append("path")
               .attr("d", arc)
               .attr("id", arcId);
 
-            parent.append("text")
+            textObj = parent.append("text")
               .attr("dy", 15)
               .attr("dx", 5)
-                .append("textPath")
-                .attr("href", function() {
-                  return "#" + arcId.apply(this, arguments);
-                })
-                .text(arcsText);
+              .attr("aria-hidden", "true");
+
+            textObj
+              .append("textPath")
+              .attr("xlink:href", function() {
+                return "#" + arcId.apply(this, arguments);
+              })
+              .text(arcsText);
           });
 
       ribbons = dataLayer.append("g")
