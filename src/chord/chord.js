@@ -42,8 +42,10 @@ this.chordChart = function(svg, settings) {
           }
           return newD;
         },
+        arcsId = sett.arcs && sett.arcs.getId ? sett.arcs.getId.bind(sett) : null,
         arcsClass = sett.arcs && sett.arcs.getClass ? sett.arcs.getClass.bind(sett) : null,
         arcsText = sett.arcs && sett.arcs.getText ? sett.arcs.getText.bind(sett) : null,
+        ribbonsId = sett.ribbons && sett.ribbons.getId ? sett.ribbons.getId.bind(sett) : null,
         ribbonsClass = sett.ribbons ? sett.ribbons.getClass.bind(sett) : null,
         chord = d3.chord()
           .padAngle(sett.padding),
@@ -52,7 +54,7 @@ this.chordChart = function(svg, settings) {
           .outerRadius(outerDiameter),
         ribbon = d3.ribbon()
           .radius(innerDiameter),
-        arcs, ribbons;
+        arcsGroup, ribbonsGroup, arcs, ribbons;
 
       if (sett.startAngle) {
         arc.startAngle(sett.startAngle.bind(sett));
@@ -71,15 +73,29 @@ this.chordChart = function(svg, settings) {
       }
       dataLayer.datum(mapIndexes(sett.getMatrix.call(sett, data)));
 
-      arcs = dataLayer.append("g")
-        .attr("class", "arcs")
+      arcsGroup = dataLayer.select(".arcs");
+      if (arcsGroup.empty()) {
+        arcsGroup = dataLayer.append("g")
+          .attr("class", "arcs");
+      }
+      arcs = arcsGroup
         .selectAll("g")
-        .data(function(chords) { return chords.groups; });
+        .data(function(chords) { return chords.groups; }, arcsId);
+
+      ribbonsGroup = dataLayer.select(".ribbons");
+      if (ribbonsGroup.empty()) {
+        ribbonsGroup = dataLayer.append("g")
+          .attr("class", "ribbons");
+      }
+      ribbons = ribbonsGroup
+        .selectAll("g")
+        .data(function(chords) { return chords; }, ribbonsId);
 
       arcs
         .enter()
         .append("g")
           .attr("class", arcsClass)
+          .attr("id", arcsId)
           .each(function(d, index) {
             var parent = d3.select(this),
               arcId = function() {
@@ -104,20 +120,38 @@ this.chordChart = function(svg, settings) {
               .text(arcsText);
           });
 
-      ribbons = dataLayer.append("g")
-        .attr("class", "ribbons")
-        .selectAll("g")
-        .data(function(chords) { return chords; });
+      arcs
+        .attr("class", arcsClass)
+        .each(function() {
+          var parent = d3.select(this);
+          parent.select("path")
+            .attr("d", arc);
+        });
+
+      arcs
+        .exit()
+        .remove();
 
       ribbons
         .enter()
         .append("g")
+          .attr("id", ribbonsId)
           .attr("class", ribbonsClass)
           .each(function() {
             d3.select(this).append("path")
               .attr("d", ribbon);
           });
 
+      ribbons
+        .attr("class", ribbonsClass)
+        .each(function() {
+          d3.select(this).select("path")
+            .attr("d", ribbon);
+        });
+
+      ribbons
+        .exit()
+        .remove();
     },
     rtnObj, process;
 
