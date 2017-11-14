@@ -1,0 +1,24 @@
+.arcs text {
+  fill: #fff;
+}
+
+.ribbons path {
+  opacity: .7;
+  stroke: #EEE;
+}
+
+.t1 {
+  fill: #0C7ECA;
+}
+
+.t2 {
+  fill: #e357d0;
+}
+
+.t3 {
+  fill: #1ABC9C;
+}
+
+.t4 {
+  fill: #FF8B52;
+}
