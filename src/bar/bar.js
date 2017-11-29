@@ -24,6 +24,14 @@ var defaults = {
       return keys;
     }
   },
+  y: {
+    getDomain: function(data) {
+      return [
+        0,
+        d3.max(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05)
+      ];
+    }
+  },
   z: {
     getDomain: function(data) {
       var sett = this,
@@ -174,10 +182,7 @@ this.barChart = function(svg, settings) {
 
       x0.domain(sett.x.getDomain.call(sett, data)).rangeRound([0, innerWidth]);
       x1.domain(sett.z.getDomain.call(sett, flatData)).rangeRound([0, x0.bandwidth()]);
-      y.domain([
-        0,
-        d3.max(flatData, sett.y.getValue.bind(sett)) * (showValue === false ? 1 : 1.05)
-      ]);
+      y.domain(sett.y.getDomain.call(sett, flatData));
 
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")

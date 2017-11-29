@@ -18,6 +18,12 @@ var defaults = {
   },
   y: {
     ticks: 10,
+    getDomain: function(flatData) {
+      return [
+        0,
+        d3.max(flatData, this.y.getValue.bind(this))
+      ];
+    }
   },
   width: 600
 };
@@ -83,10 +89,7 @@ this.lineChart = function(svg, settings) {
       y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
 
       x.domain(sett.x.getDomain.call(sett, flatData));
-      y.domain([
-        0,
-        d3.max(flatData, sett.y.getValue.bind(sett))
-      ]);
+      y.domain(sett.y.getDomain.call(sett, flatData));
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")
           .attr("class", "data");
