@@ -66,7 +66,8 @@ i18n.load(["i18n"], function() {
     y: {
       label: i18next.t("y_label_percent", {ns: "area"}),
       getAbsoluteTotal: function(d, index, data) {
-        var sett = this;
+        var sett = this,
+          keys, total;
         if (!d[sett.y.totalProperty]) {
           keys = sett.z.getKeys.bind(sett)(data);
           total = 0;

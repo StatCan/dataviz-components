@@ -11,7 +11,7 @@ var defaults = {
   width: 600
 };
 
-this.bubbleChart = function(svg, settings) {
+this.bubbleChart = function(svg, settings, data) {
   var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
@@ -33,9 +33,9 @@ this.bubbleChart = function(svg, settings) {
     },
     draw = function() {
       var sett = this.settings,
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data,
-        hierarchy = d3.hierarchy({children: data})
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData.call(sett, data) : data,
+        hierarchy = d3.hierarchy({children: filteredData})
           .sum(sett.y.getValue.bind(sett))
           .sort(function(a, b) {
             return sett.y.getValue.call(sett, b) - sett.y.getValue.call(sett, a);
@@ -155,8 +155,8 @@ this.bubbleChart = function(svg, settings) {
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
-    d3.json(mergedSettings.url, function(error, data) {
-      mergedSettings.data = data;
+    d3.json(mergedSettings.url, function(error, xhr) {
+      data = xhr;
       process();
     });
   } else {

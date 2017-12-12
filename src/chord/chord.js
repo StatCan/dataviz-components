@@ -12,7 +12,7 @@ var defaults = {
   width: 600
 };
 
-this.chordChart = function(svg, settings) {
+this.chordChart = function(svg, settings, data) {
   var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
@@ -24,8 +24,8 @@ this.chordChart = function(svg, settings) {
       .duration(1000),
     draw = function() {
       var sett = this.settings,
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData.call(sett, data) : data,
         outerDiameter = Math.min(innerHeight, innerWidth) / 2,
         innerDiameter = outerDiameter - sett.arcsWidth,
         getArcsAngles = function(d) {
@@ -140,7 +140,7 @@ this.chordChart = function(svg, settings) {
           .attr("class", "data")
           .attr("transform", "translate(" + innerWidth / 2 + "," + innerHeight / 2 + ")");
       }
-      dataLayer.datum(mapIndexes(sett.getMatrix.call(sett, data)));
+      dataLayer.datum(mapIndexes(sett.getMatrix.call(sett, filteredData)));
 
       arcsGroup = dataLayer.select(".arcs");
       if (arcsGroup.empty()) {
@@ -255,8 +255,8 @@ this.chordChart = function(svg, settings) {
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
-    d3.json(mergedSettings.url, function(error, data) {
-      mergedSettings.data = data;
+    d3.json(mergedSettings.url, function(error, xhr) {
+      data = xhr;
       process();
     });
   } else {

@@ -56,7 +56,7 @@ var defaults = {
   width: 600
 };
 
-this.barChart = function(svg, settings) {
+this.barChart = function(svg, settings, data) {
   var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
@@ -68,14 +68,14 @@ this.barChart = function(svg, settings) {
       .duration(1000),
     draw = function() {
       var sett = this.settings,
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData.call(sett, data) : data,
+        flatData = [].concat.apply([], filteredData.map(function(d) {
+          return sett.z.getDataPoints.call(sett, d);
+        })),
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         showValue = sett.showValues,
-        flatData = [].concat.apply([], data.map(function(d) {
-          return sett.z.getDataPoints.call(sett, d);
-        })),
         grpClassFn = function(d,i){
           var cl = "bar-group bar-group" + (i + 1);
 
@@ -180,7 +180,7 @@ this.barChart = function(svg, settings) {
       y = rtnObj.y = d3.scaleLinear()
         .rangeRound([innerHeight, 0]);
 
-      x0.domain(sett.x.getDomain.call(sett, data)).rangeRound([0, innerWidth]);
+      x0.domain(sett.x.getDomain.call(sett, filteredData)).rangeRound([0, innerWidth]);
       x1.domain(sett.z.getDomain.call(sett, flatData)).rangeRound([0, x0.bandwidth()]);
       y.domain(sett.y.getDomain.call(sett, flatData));
 
@@ -190,7 +190,7 @@ this.barChart = function(svg, settings) {
       }
 
       barGroups = dataLayer.selectAll(".bar-group")
-        .data(data);
+        .data(filteredData);
 
       barGroups
         .enter()
@@ -252,8 +252,8 @@ this.barChart = function(svg, settings) {
     drawTable = function() {
       /*var sett = this.settings,
         summaryId = "chrt-dt-tbl",
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData(sett.data, "table") : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData(data, "table") : data,
         parent = svg.select(
           svg.classed("svg-shimmed") ? function(){return this.parentNode.parentNode;} : function(){return this.parentNode;}
         ),
@@ -288,8 +288,8 @@ this.barChart = function(svg, settings) {
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
-    d3.json(mergedSettings.url, function(error, data) {
-      mergedSettings.data = data;
+    d3.json(mergedSettings.url, function(error, xhr) {
+      data = xhr;
       process();
     });
   } else {

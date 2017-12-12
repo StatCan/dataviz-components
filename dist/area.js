@@ -31,7 +31,7 @@ var defaults = {
   width: 600
 };
 
-this.areaChart = function(svg, settings) {
+this.areaChart = function(svg, settings, data) {
   var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
@@ -50,8 +50,12 @@ this.areaChart = function(svg, settings) {
       .duration(1000),
     draw = function() {
       var sett = this.settings,
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData.call(sett, data) : data,
+        keys = sett.z.getKeys.call(sett, filteredData),
+        stackData = stack
+          .keys(keys)
+          .value(sett.y.getValue.bind(sett))(filteredData),
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         labelX = innerWidth - 6,
@@ -59,7 +63,6 @@ this.areaChart = function(svg, settings) {
           return d3.scaleTime();
         },
         labelY = function(d) { return y((d[d.length - 1][0] + d[d.length - 1][1]) / 2); },
-        keys = sett.z.getKeys.call(sett, data),
         classFn = function(d,i){
           var cl = "area area" + (i + 1);
 
@@ -69,20 +72,16 @@ this.areaChart = function(svg, settings) {
 
           return cl;
         },
-        stackData, areas, labels;
+        areas, labels;
 
       x = rtnObj.x = getXScale().range([0, innerWidth]);
       y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
 
-      x.domain(d3.extent(data, sett.x.getValue.bind(sett)));
+      x.domain(d3.extent(filteredData, sett.x.getValue.bind(sett)));
       y.domain([
         0,
-        d3.max(data, sett.y.getTotal.bind(sett))
+        d3.max(filteredData, sett.y.getTotal.bind(sett))
       ]);
-
-      stackData = stack
-        .keys(keys)
-        .value(sett.y.getValue.bind(sett))(data);
 
       if (dataLayer.empty()) {
         dataLayer = chartInner.append("g")
@@ -173,14 +172,14 @@ this.areaChart = function(svg, settings) {
     drawTable = function() {
       var sett = this.settings,
         summaryId = "chrt-dt-tbl",
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData(sett.data, "table") : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData(data, "table") : data,
         parent = svg.select(
           svg.classed("svg-shimmed") ? function(){return this.parentNode.parentNode;} : function(){return this.parentNode;}
         ),
         details = parent
           .select("details"),
-        keys = sett.z.getKeys.call(sett, data),
+        keys = sett.z.getKeys.call(sett, filteredData),
         table, header, body, dataRows, dataRow, k;
 
       if (details.empty()) {
@@ -210,7 +209,7 @@ this.areaChart = function(svg, settings) {
         }
 
         dataRows = body.selectAll("tr")
-          .data(data);
+          .data(filteredData);
 
         dataRow = dataRows
           .enter()
@@ -265,8 +264,8 @@ this.areaChart = function(svg, settings) {
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
-    d3.json(mergedSettings.url, function(error, data) {
-      mergedSettings.data = data;
+    d3.json(mergedSettings.url, function(error, xhr) {
+      data = xhr;
       process();
     });
   } else {

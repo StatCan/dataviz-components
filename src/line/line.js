@@ -28,7 +28,7 @@ var defaults = {
   width: 600
 };
 
-this.lineChart = function(svg, settings) {
+this.lineChart = function(svg, settings, data) {
   var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
@@ -47,9 +47,12 @@ this.lineChart = function(svg, settings) {
       .duration(1000),
     draw = function() {
       var sett = this.settings,
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data,
-        showLabel = sett.showLabels !== undefined ? sett.showLabels : data.length > 1,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData.call(sett, data) : data,
+        flatData = [].concat.apply([], filteredData.map(function(d) {
+          return sett.z.getDataPoints.call(sett, d);
+        })),
+        showLabel = sett.showLabels !== undefined ? sett.showLabels : filteredData.length > 1,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         getXScale = function() {
@@ -80,9 +83,6 @@ this.lineChart = function(svg, settings) {
         lineFn = function(d) {
           return line(sett.z.getDataPoints.call(sett, d));
         },
-        flatData = [].concat.apply([], data.map(function(d) {
-          return sett.z.getDataPoints.call(sett, d);
-        })),
         lines, labels;
 
       x = rtnObj.x = getXScale().range(sett.x.getRange.call(sett, flatData));
@@ -96,7 +96,7 @@ this.lineChart = function(svg, settings) {
       }
 
       lines = dataLayer.selectAll(".dline")
-        .data(data, sett.z.getId.bind(sett));
+        .data(filteredData, sett.z.getId.bind(sett));
 
       lines
         .enter()
@@ -116,11 +116,11 @@ this.lineChart = function(svg, settings) {
         .data(
           function() {
             if (typeof showLabel === "function") {
-              return data.filter(showLabel.bind(sett));
+              return filteredData.filter(showLabel.bind(sett));
             } else if (showLabel === false) {
               return [];
             }
-            return data;
+            return filteredData;
           }()
           , sett.z.getId.bind(sett)
         );
@@ -312,8 +312,8 @@ this.lineChart = function(svg, settings) {
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
-    d3.json(mergedSettings.url, function(error, data) {
-      mergedSettings.data = data;
+    d3.json(mergedSettings.url, function(error, xhr) {
+      data = xhr;
       process();
     });
   } else {

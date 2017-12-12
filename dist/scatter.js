@@ -18,7 +18,7 @@ var defaults = {
   width: 600
 };
 
-this.scatterChart = function(svg, settings) {
+this.scatterChart = function(svg, settings, data) {
   var mergedSettings = extend(true, {}, defaults, settings),
     outerWidth = mergedSettings.width,
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
@@ -58,13 +58,13 @@ this.scatterChart = function(svg, settings) {
     },
     draw = function() {
       var sett = this.settings,
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData.call(sett, sett.data) : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData.call(sett, data) : data,
+        displayOnly = sett.displayOnly && typeof sett.displayOnly === "function" ?
+          sett.displayOnly.call(sett, filteredData) : null,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         padding = 1 + sett.pointRadius / innerHeight,
-        displayOnly = sett.displayOnly && typeof sett.displayOnly === "function" ?
-          sett.displayOnly.call(sett, data) : null,
         classFn = function(d,i){
           var cl = "point point" + (i + 1);
 
@@ -116,13 +116,13 @@ this.scatterChart = function(svg, settings) {
         xDomain, yDomain, bounds, scatter, labels;
 
       if (sett.filterOutliars) {
-        bounds = getOutliarBounds(data);
+        bounds = getOutliarBounds(filteredData);
 
         xDomain = [bounds.x.min, bounds.x.max];
         yDomain = [bounds.y.min, bounds.y.max];
       } else {
-        xDomain = d3.extent(displayOnly ? displayOnly : data, sett.x.getValue.bind(sett));
-        yDomain = d3.extent(displayOnly ? displayOnly : data, sett.y.getValue.bind(sett));
+        xDomain = d3.extent(displayOnly ? displayOnly : filteredData, sett.x.getValue.bind(sett));
+        yDomain = d3.extent(displayOnly ? displayOnly : filteredData, sett.y.getValue.bind(sett));
       }
 
       xDomain[0] -= padding;
@@ -142,7 +142,7 @@ this.scatterChart = function(svg, settings) {
       }
 
       scatter = dataLayer.selectAll(".point")
-        .data(data, sett.z.getId.bind(sett));
+        .data(filteredData, sett.z.getId.bind(sett));
 
       scatter
         .enter()
@@ -166,7 +166,7 @@ this.scatterChart = function(svg, settings) {
       labels = dataLayer.selectAll(".label");
       if (sett.showLabels) {
         labels
-          .data(data)
+          .data(filteredData)
           .enter()
           .append("text")
             .text(sett.z.getText.bind(sett))
@@ -236,8 +236,8 @@ this.scatterChart = function(svg, settings) {
     drawTable = function() {
       var sett = this.settings,
         summaryId = "chrt-dt-tbl",
-        data = (sett.filterData && typeof sett.filterData === "function") ?
-          sett.filterData(sett.data, "table") : sett.data,
+        filteredData = (sett.filterData && typeof sett.filterData === "function") ?
+          sett.filterData(data, "table") : data,
         parent = svg.select(
           svg.classed("svg-shimmed") ? function(){return this.parentNode.parentNode;} : function(){return this.parentNode;}
         ),
@@ -269,7 +269,7 @@ this.scatterChart = function(svg, settings) {
           .text(settings.y.label);
 
         dataRows = body.selectAll("tr")
-          .data(data);
+          .data(filteredData);
 
         dataRow = dataRows
           .enter()
@@ -326,8 +326,8 @@ this.scatterChart = function(svg, settings) {
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
   if (!mergedSettings.data) {
-    d3.json(mergedSettings.url, function(error, data) {
-      mergedSettings.data = data;
+    d3.json(mergedSettings.url, function(error, xhr) {
+      data = xhr;
       process();
     });
   } else {
