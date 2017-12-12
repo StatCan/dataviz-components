@@ -112,7 +112,7 @@ this.areaChart = function(svg, settings, data) {
         .append("text")
           .text(sett.z.getText.bind(sett))
           .attr("aria-hidden", "true")
-          .attr("class", "label")
+          .attr("class", "area-label")
           .attr("fill", "#000")
           .attr("x", labelX)
           .attr("y", labelY)
