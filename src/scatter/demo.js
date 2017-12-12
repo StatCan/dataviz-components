@@ -34,7 +34,7 @@ i18n.load(["i18n"], function() {
       getId: function(d) {
         return d.id;
       },
-      getText: function(d) {
+      getText: function() {
         return this.z.getId.apply(this, arguments);
       }
     },
