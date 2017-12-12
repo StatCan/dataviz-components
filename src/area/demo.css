@@ -1,3 +1,12 @@
+.area svg text {
+	fill: currentColor;
+}
+
+.area svg .tick line,
+.area svg .domain {
+	stroke: currentColor;
+}
+
 .asia {
 	fill: #1A75B5
 }

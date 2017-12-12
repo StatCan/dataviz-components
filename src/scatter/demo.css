@@ -1,3 +1,12 @@
+.scatter svg text {
+	fill: currentColor;
+}
+
+.scatter svg .tick line,
+.scatter svg .domain {
+	stroke: currentColor;
+}
+
 .point {
   fill: #223c66;
   opacity: .7;
