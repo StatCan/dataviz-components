@@ -7,10 +7,16 @@ window.i18n = (function() {
 
   return {
     lang: lang,
-    load: function(url_roots, callback) {
-      i18next.init({
-        lng: lang
-      }).on("initialized", function() {
+    load: function(url_roots, options, callback) {
+      if (typeof options === "function") {
+        callback = options;
+        options = {
+          lng: lang
+        };
+      } else if (!options.lng){
+        options.lng = lang;
+      }
+      i18next.init(options).on("initialized", function() {
         var q = d3.queue(),
           i;
 
