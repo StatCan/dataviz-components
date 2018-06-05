@@ -126,7 +126,6 @@ this.scatterChart = function(svg, settings, data) {
       }
 
       xDomain[0] -= padding;
-      yDomain[0] -= padding;
       xDomain[1] += padding;
       yDomain[1] += padding;
 
