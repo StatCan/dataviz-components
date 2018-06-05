@@ -201,6 +201,8 @@ this.scatterChart = function(svg, settings, data) {
             .attr("class", "chart-label")
             .attr("fill", "#000")
             .attr("x", innerWidth)
+            .attr("dy", "-0.5em")
+            .attr("text-anchor", "end")
             .text(settings.x.label);
       }
       xAxisObj.call(
