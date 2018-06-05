@@ -87,16 +87,16 @@ this.scatterChart = function(svg, settings, data) {
 
           return cl;
         },
-        idFn = function(d) {
+        idFn = function() {
           if (sett.z && sett.z.getId && typeof sett.z.getId === "function") {
-            return sett.z.getId(d);
+            return sett.z.getId.apply(sett, arguments);
           }
         },
-        xFn = function(d) {return x(sett.x.getValue.call(this, d));},
-        yFn = function(d) {return y(sett.y.getValue.call(this, d));},
+        xFn = function() {return x(sett.x.getValue.apply(this, arguments));},
+        yFn = function() {return y(sett.y.getValue.apply(this, arguments));},
         xLabelFn = function(d, i, selection) {
           var bbox = selection[i].getBBox(),
-            lblX = xFn(d) + sett.pointRadius;
+            lblX = xFn.apply(sett, arguments) + sett.pointRadius;
 
           if (lblX + bbox.width > innerWidth) {
             lblX -= bbox.width + sett.pointRadius * 2;
