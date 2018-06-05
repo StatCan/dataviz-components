@@ -239,8 +239,8 @@ this.barChart = function(svg, settings, data) {
             .attr("class", "chart-label")
             .attr("fill", "#000")
             .attr("y", "0")
-            .attr("dy", "-8")
-            .attr("text-anchor", "middle")
+            .attr("dy", "-0.5em")
+            .attr("text-anchor", "start")
             .text(sett.y.label);
       }
       yAxisObj.call(

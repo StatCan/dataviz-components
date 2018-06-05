@@ -1,7 +1,7 @@
 (function(extend) {
 var defaults = {
   margin: {
-    top: 10,
+    top: 15,
     right: 10,
     bottom: 30,
     left: 50
@@ -158,9 +158,8 @@ this.areaChart = function(svg, settings, data) {
             .attr("class", "chart-label")
             .attr("fill", "#000")
             .attr("y", "0")
-            .attr("transform", "rotate(-90)")
-            .attr("dy", "1.5em")
-            .attr("text-anchor", "end")
+            .attr("dy", "-0.5em")
+            .attr("text-anchor", "start")
             .text(settings.y.label);
       }
       yAxisObj.call(
