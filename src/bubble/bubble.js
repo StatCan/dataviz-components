@@ -154,7 +154,7 @@ this.bubbleChart = function(svg, settings, data) {
     drawTable.apply(rtnObj);
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
   };
-  if (!mergedSettings.data) {
+  if (data === undefined) {
     d3.json(mergedSettings.url, function(error, xhr) {
       data = xhr;
       process();
