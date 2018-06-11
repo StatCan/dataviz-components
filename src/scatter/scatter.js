@@ -115,8 +115,8 @@ this.scatterChart = function(svg, settings, data) {
         padding, xDomain, yDomain, pDomain, pRange, pRadius, pScale, bounds, scatter, labels;
 
       if (typeof sett.pointRadius === "object") {
-        pDomain = sett.pointRadius.getDomain === "function" ? sett.pointRadius.getDomain(filteredData) : [0, 1];
-        pRange = sett.pointRadius.getRange() || [1,1];
+        pDomain = typeof sett.pointRadius.getDomain === "function" ? sett.pointRadius.getDomain(filteredData) : [0, 1];
+        pRange = sett.pointRadius.getRange() || [1, 1];
         p = rtnObj.p = d3.scaleLinear().range(pRange).domain(pDomain);
         pRadius = function() {
           return p(sett.pointRadius.getValue.apply(this, arguments))
