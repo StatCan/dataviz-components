@@ -64,7 +64,6 @@ this.scatterChart = function(svg, settings, data) {
           sett.displayOnly.call(sett, filteredData) : null,
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
-        padding = 1 + sett.pointRadius / innerHeight,
         classFn = function(d,i){
           var cl = "point point" + (i + 1);
 
@@ -113,7 +112,20 @@ this.scatterChart = function(svg, settings, data) {
 
           return lblY;
         },
-        xDomain, yDomain, bounds, scatter, labels;
+        padding, xDomain, yDomain, pDomain, pRange, pRadius, pScale, bounds, scatter, labels;
+
+      if (typeof sett.pointRadius === "object") {
+        pDomain = sett.pointRadius.getDomain === "function" ? sett.pointRadius.getDomain(filteredData) : [0, 1];
+        pRange = sett.pointRadius.getRange() || [1,1];
+        p = rtnObj.p = d3.scaleLinear().range(pRange).domain(pDomain);
+        pRadius = function() {
+          return p(sett.pointRadius.getValue.apply(this, arguments))
+        }
+        padding = pRange[1];
+      } else {
+        padding = 1 + sett.pointRadius / innerHeight,
+        pRadius = sett.pointRadius || 1;
+      }
 
       if (sett.filterOutliars) {
         bounds = getOutliarBounds(filteredData);
@@ -146,7 +158,7 @@ this.scatterChart = function(svg, settings, data) {
       scatter
         .enter()
         .append("circle")
-          .attr("r", sett.pointRadius)
+          .attr("r", pRadius)
           .attr("id", idFn)
           .attr("class", classFn)
           .attr("cx", xFn)
@@ -293,7 +305,7 @@ this.scatterChart = function(svg, settings, data) {
     clear = function() {
       dataLayer.remove();
     },
-    x, y, rtnObj, process;
+    x, y, p, rtnObj, process;
 
   rtnObj = {
     settings: mergedSettings,
