@@ -112,19 +112,19 @@ this.scatterChart = function(svg, settings, data) {
 
           return lblY;
         },
-        padding, xDomain, yDomain, pDomain, pRange, pRadius, pScale, bounds, scatter, labels;
+        padding, xDomain, yDomain, pDomain, pRange, pRadius, bounds, scatter, labels;
 
       if (typeof sett.pointRadius === "object") {
         pDomain = typeof sett.pointRadius.getDomain === "function" ? sett.pointRadius.getDomain(filteredData) : [0, 1];
         pRange = sett.pointRadius.getRange() || [1, 1];
         p = rtnObj.p = d3.scaleLinear().range(pRange).domain(pDomain);
         pRadius = function() {
-          return p(sett.pointRadius.getValue.apply(this, arguments))
-        }
+          return p(sett.pointRadius.getValue.apply(this, arguments));
+        };
         padding = pRange[1];
       } else {
-        padding = 1 + sett.pointRadius / innerHeight,
         pRadius = sett.pointRadius || 1;
+        padding = pRadius;
       }
 
       if (sett.filterOutliars) {
@@ -137,12 +137,8 @@ this.scatterChart = function(svg, settings, data) {
         yDomain = d3.extent(displayOnly ? displayOnly : filteredData, sett.y.getValue.bind(sett));
       }
 
-      xDomain[0] -= padding;
-      xDomain[1] += padding;
-      yDomain[1] += padding;
-
-      x = rtnObj.x = d3.scaleLinear().range([0, innerWidth]);
-      y = rtnObj.y = d3.scaleLinear().range([innerHeight, 0]);
+      x = rtnObj.x = d3.scaleLinear().range([padding, innerWidth - (padding * 2)]);
+      y = rtnObj.y = d3.scaleLinear().range([innerHeight - (padding * 2), padding]);
 
       x.domain(xDomain);
       y.domain(yDomain);
@@ -206,13 +202,13 @@ this.scatterChart = function(svg, settings, data) {
         xAxisObj = chartInner.append("g")
         .attr("class", "x axis")
         .attr("aria-hidden", "true")
-        .attr("transform", "translate(0," + innerHeight + ")");
+        .attr("transform", "translate(0," + (innerHeight - (padding * 2)) + ")");
 
         xAxisObj
           .append("text")
             .attr("class", "chart-label")
             .attr("fill", "#000")
-            .attr("x", innerWidth)
+            .attr("x", innerWidth - (padding * 2))
             .attr("dy", "-0.5em")
             .attr("text-anchor", "end")
             .text(settings.x.label);
@@ -226,13 +222,14 @@ this.scatterChart = function(svg, settings, data) {
       if (yAxisObj.empty()) {
         yAxisObj = chartInner.append("g")
           .attr("class", "y axis")
-          .attr("aria-hidden", "true");
+          .attr("aria-hidden", "true")
+          .attr("transform", "translate(" + padding + ",0)");
 
         yAxisObj
           .append("text")
             .attr("class", "chart-label")
             .attr("fill", "#000")
-            .attr("y", "0")
+            .attr("y", padding)
             .attr("dy", "-0.5em")
             .attr("text-anchor", "start")
             .text(settings.y.label);
