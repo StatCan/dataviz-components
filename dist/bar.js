@@ -222,6 +222,8 @@ this.barChart = function(svg, settings, data) {
             .attr("dy", "-0.5em")
             .attr("text-anchor", "end")
             .text(sett.x.label);
+      } else {
+        xAxisObj.select("text").text(settings.x.label);
       }
       xAxisObj.call(
         d3.axisBottom(x0)
@@ -242,6 +244,8 @@ this.barChart = function(svg, settings, data) {
             .attr("dy", "-0.5em")
             .attr("text-anchor", "start")
             .text(sett.y.label);
+      } else {
+        yAxisObj.select("text").text(settings.y.label);
       }
       yAxisObj.call(
         d3.axisLeft(y)
