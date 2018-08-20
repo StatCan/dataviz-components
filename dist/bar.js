@@ -99,39 +99,63 @@ this.barChart = function(svg, settings, data) {
         },
         barsFn = function() {
           var group = d3.select(this),
-            datum = sett.z.getDataPoints.call(sett, group.datum()),
+            xVal = sett.x.getValue.call(sett, group.data()[0]),
+            getDatum = function(d) {
+              return sett.z.getDataPoints.call(sett, d)
+                  .filter(function(d) {
+                    return sett.x.getValue.call(sett, d) === xVal;
+                  })[0];
+            },
             bars = group.selectAll(".bar")
-              .data(datum, sett.z.getId.bind(sett)),
+              .data(filteredData, sett.z.getId.bind(sett)),
             values = group.selectAll(".value")
               .data(function() {
                 if (typeof showValue === "function") {
-                  return datum.filter(showValue.bind(sett));
+                  return filteredData.filter(function(d) {
+                    return showValue.call(sett, getDatum(d));
+                  });
                 } else if (showValue !== true) {
                   return[];
                 }
-                return datum.filter(function(d) {
-                  return sett.y.getValue.call(sett, d) > 0;
+                return filteredData.filter(function(d) {
+                  return sett.y.getValue.call(sett, getDatum.call(sett, d)) > 0;
                 });
               }, sett.z.getId.bind(sett));
 
           bars
             .enter()
             .append("rect")
-              .attr("x", xFn)
-              .attr("y", innerHeight)
-              .transition(transition)
-              .attr("y", yFn)
+              .attr("x", xFn.bind(sett))
               .attr("width", x1.bandwidth())
-              .attr("height", heightFn.bind(sett))
-              .attr("class", barClassFn.bind(sett));
+              .attr("y", innerHeight)
+              .attr("height", 0)
+              .attr("class", barClassFn.bind(sett))
+              .each(function(d) {
+                var datum = getDatum.call(sett, d),
+                  yVal = yFn.call(sett, datum),
+                  hVal = heightFn.call(sett, datum);
+
+                d3.select(this)
+                  .transition(transition)
+                  .attr("y", yVal)
+                  .attr("height", hVal);
+              });
+
 
           bars
-            .transition(transition)
-            .attr("x", xFn)
-            .attr("y", yFn)
+            .attr("x", xFn.bind(sett))
             .attr("width", x1.bandwidth())
-            .attr("height", heightFn.bind(sett))
-            .attr("class", barClassFn.bind(sett));
+            .attr("class", barClassFn.bind(sett))
+            .each(function(d) {
+              var datum = getDatum.call(sett, d),
+                yVal = yFn.call(sett, datum),
+                hVal = heightFn.call(sett, datum);
+
+              d3.select(this)
+                .transition(transition)
+                .attr("y", yVal)
+                .attr("height", hVal);
+            });
 
           bars
             .exit()
@@ -144,17 +168,29 @@ this.barChart = function(svg, settings, data) {
                   return xFn.apply(this, arguments) + x1.bandwidth() / 2;
                 })
                 .attr("aria-hidden", "true")
-                .attr("y", yFn)
                 .attr("dy", "-0.5em")
                 .attr("text-anchor", "middle")
                 .attr("class", "value")
-                .text(sett.y.getText.bind(sett));
+                .each(function(d) {
+                  var datum = getDatum.call(sett, d),
+                    yVal = yFn.call(sett, datum);
+
+                  d3.select(this)
+                    .attr("y", yVal)
+                    .text(sett.y.getText.call(sett, datum));
+                });
 
           values
-            .transition(transition)
             .attr("x", xFn)
-            .attr("y", yFn)
-            .text(sett.y.getText.bind(sett));
+            .each(function(d) {
+              var datum = getDatum.call(sett, d),
+                yVal = yFn.call(sett, datum);
+
+              d3.select(this)
+                .transition(transition)
+                .attr("y", yVal)
+                .text(sett.y.getText.call(sett, datum));
+            });
 
           values
             .exit()
@@ -169,6 +205,7 @@ this.barChart = function(svg, settings, data) {
         heightFn = function() {
           return innerHeight - yFn.apply(this, arguments);
         },
+        xDomain = sett.x.getDomain.call(sett, flatData),
         barGroups;
 
       x0 = rtnObj.x0 = d3.scaleBand()
@@ -180,8 +217,9 @@ this.barChart = function(svg, settings, data) {
       y = rtnObj.y = d3.scaleLinear()
         .rangeRound([innerHeight, 0]);
 
-      x0.domain(sett.x.getDomain.call(sett, filteredData)).rangeRound([0, innerWidth]);
-      x1.domain(sett.z.getDomain.call(sett, flatData)).rangeRound([0, x0.bandwidth()]);
+
+      x0.domain(xDomain).rangeRound([0, innerWidth]);
+      x1.domain(sett.z.getDomain.call(sett, filteredData)).rangeRound([0, x0.bandwidth()]);
       y.domain(sett.y.getDomain.call(sett, flatData));
 
       if (dataLayer.empty()) {
@@ -190,7 +228,13 @@ this.barChart = function(svg, settings, data) {
       }
 
       barGroups = dataLayer.selectAll(".bar-group")
-        .data(filteredData);
+        .data(xDomain.map(function(x) {
+
+          for(var i = 0; i < flatData.length; i++) {
+            if (sett.x.getValue(flatData[i]) === x)
+              return flatData[i];
+          }
+        }));
 
       barGroups
         .enter()

@@ -22,13 +22,26 @@ i18n.load(["i18n"], function() {
       var root = d.data,
         keys = Object.keys(root);
       keys.splice(keys.indexOf("keys"),1);
-      return root.keys.values.map(function(value, index) {
+
+      /*console.log(keys.map(function(category) {
         return {
-          region: value,
-          values: keys.map(function(key) {
+          category: category,
+          values: root.keys.values.map(function(region, index) {
             return {
-              cat: key,
-              imm: root[key][index]
+              region: region,
+              value: root[category][index]
+            };
+          })
+        };
+      }));*/
+
+      return keys.map(function(category) {
+        return {
+          category: category,
+          values: root.keys.values.map(function(region, index) {
+            return {
+              region: region,
+              imm: root[category][index]
             };
           })
         };
@@ -60,7 +73,7 @@ i18n.load(["i18n"], function() {
     z: {
       label: i18next.t("z_label", {ns: rootI18nNs}),
       getId: function(d) {
-        return d.cat;
+        return d.category;
       },
       getClass: function() {
         return this.z.getId.apply(this, arguments);
