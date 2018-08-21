@@ -151,11 +151,12 @@ this.barChart = function(svg, settings, data) {
             .each(function(d) {
               var datum = getDatum.call(sett, d),
                 yVal = yFn.call(sett, datum),
-                hVal = heightFn.call(sett, datum);
+                hVal = heightFn.call(sett, datum),
+                y0 = y(0);
 
               d3.select(this)
                 .transition(transition)
-                .attr("y", yVal)
+                .attr("y", yVal < y0 ? yVal: y0)
                 .attr("height", hVal);
             });
 
