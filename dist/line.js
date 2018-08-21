@@ -19,8 +19,9 @@ var defaults = {
   y: {
     ticks: 10,
     getDomain: function(flatData) {
+      var min = d3.min(flatData, this.y.getValue.bind(this));
       return [
-        0,
+        min > 0 ? 0 : min,
         d3.max(flatData, this.y.getValue.bind(this))
       ];
     }
