@@ -26,8 +26,9 @@ var defaults = {
   },
   y: {
     getDomain: function(data) {
+      var min = d3.min(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05);
       return [
-        0,
+        min > 0 ? 0: min,
         d3.max(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05)
       ];
     }
@@ -127,17 +128,18 @@ this.barChart = function(svg, settings, data) {
             .append("rect")
               .attr("x", xFn.bind(sett))
               .attr("width", x1.bandwidth())
-              .attr("y", innerHeight)
+              .attr("y", y(0))
               .attr("height", 0)
               .attr("class", barClassFn.bind(sett))
               .each(function(d) {
                 var datum = getDatum.call(sett, d),
                   yVal = yFn.call(sett, datum),
-                  hVal = heightFn.call(sett, datum);
+                  hVal = heightFn.call(sett, datum),
+                  y0 = y(0);
 
                 d3.select(this)
                   .transition(transition)
-                  .attr("y", yVal)
+                  .attr("y", yVal < y0 ? yVal: y0)
                   .attr("height", hVal);
               });
 
@@ -203,7 +205,11 @@ this.barChart = function(svg, settings, data) {
           return y(sett.y.getValue.call(sett, d));
         },
         heightFn = function() {
-          return innerHeight - yFn.apply(this, arguments);
+          var yVal = yFn.apply(this, arguments);
+
+          if (yVal < y(0))
+            return y(0) - yVal;
+          return yVal - y(0);
         },
         xDomain = sett.x.getDomain.call(sett, flatData),
         barGroups;
