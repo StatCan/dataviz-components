@@ -23,18 +23,6 @@ i18n.load(["i18n"], function() {
         keys = Object.keys(root);
       keys.splice(keys.indexOf("keys"),1);
 
-      /*console.log(keys.map(function(category) {
-        return {
-          category: category,
-          values: root.keys.values.map(function(region, index) {
-            return {
-              region: region,
-              value: root[category][index]
-            };
-          })
-        };
-      }));*/
-
       return keys.map(function(category) {
         return {
           category: category,
