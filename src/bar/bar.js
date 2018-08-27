@@ -26,10 +26,12 @@ var defaults = {
   },
   y: {
     getDomain: function(data) {
-      var min = d3.min(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05);
+      var min = d3.min(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05),
+        max = d3.max(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05);
+
       return [
-        min > 0 ? 0: min,
-        d3.max(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05)
+        min > 0 ? 0 : min,
+        max < 0 ? 0 : max
       ];
     }
   },
