@@ -26,8 +26,13 @@ var defaults = {
   },
   y: {
     getDomain: function(data) {
-      var min = d3.min(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05),
-        max = d3.max(data, this.y.getValue.bind(this)) * (this.showValue === false ? 1 : 1.05);
+      var min = d3.min(data, this.y.getValue.bind(this)),
+        max = d3.max(data, this.y.getValue.bind(this));
+
+      if (this.showValues) {
+        min *= (min < 0 ? 1.1 : 1.05);
+        max *= 1.05;
+      }
 
       return [
         min > 0 ? 0 : min,
@@ -121,7 +126,7 @@ this.barChart = function(svg, settings, data) {
                   return[];
                 }
                 return filteredData.filter(function(d) {
-                  return sett.y.getValue.call(sett, getDatum.call(sett, d)) > 0;
+                  return sett.y.getValue.call(sett, getDatum.call(sett, d)) !== 0;
                 });
               }, sett.z.getId.bind(sett));
 
@@ -173,7 +178,16 @@ this.barChart = function(svg, settings, data) {
                   return xFn.apply(this, arguments) + x1.bandwidth() / 2;
                 })
                 .attr("aria-hidden", "true")
-                .attr("dy", "-0.5em")
+                .attr("dy", function(d) {
+                  var datum = getDatum.call(sett, d),
+                    val = sett.y.getValue.call(sett, datum);
+                  switch(Math.sign(val)) {
+                  case 1:
+                    return "-0.5em";
+                  case -1:
+                    return "1.5em";
+                  }
+                })
                 .attr("text-anchor", "middle")
                 .attr("class", "value")
                 .each(function(d) {
