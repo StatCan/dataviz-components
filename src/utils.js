@@ -71,7 +71,7 @@ window.i18n = (function() {
 d3 = d3 || {};
 
 d3.stcExt = {
-  get5PointsInterpolation: function(negativeStartColor, negativeEndColor, neutralColor, positiveStartColor, positiveEndColor) {
+  get5PointsInterpolation: function(negativeEndColor, negativeStartColor, neutralColor, positiveStartColor, positiveEndColor) {
     var rgbNegStart = d3.rgb(negativeStartColor),
       rgbNegEnd = d3.rgb(negativeEndColor),
       rgbPosStart = d3.rgb(positiveStartColor),
