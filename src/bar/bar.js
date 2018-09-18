@@ -85,6 +85,9 @@ this.barChart = function(svg, settings, data) {
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
         showValue = sett.showValues,
+        valuesX = function() {
+          return xFn.apply(this, arguments) + x1.bandwidth() / 2;
+        },
         grpClassFn = function(d,i){
           var cl = "bar-group bar-group" + (i + 1);
 
@@ -175,9 +178,7 @@ this.barChart = function(svg, settings, data) {
           values
             .enter()
               .append("text")
-                .attr("x", function() {
-                  return xFn.apply(this, arguments) + x1.bandwidth() / 2;
-                })
+                .attr("x", valuesX)
                 .attr("aria-hidden", "true")
                 .attr("dy", function(d) {
                   var datum = getDatum.call(sett, d),
@@ -201,7 +202,7 @@ this.barChart = function(svg, settings, data) {
                 });
 
           values
-            .attr("x", xFn)
+            .attr("x", valuesX)
             .each(function(d) {
               var datum = getDatum.call(sett, d),
                 yVal = yFn.call(sett, datum);
