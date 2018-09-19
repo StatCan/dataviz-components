@@ -144,12 +144,14 @@ this.barChart = function(svg, settings, data) {
               .attr("class", barClassFn.bind(sett))
               .each(function(d) {
                 var datum = getDatum.call(sett, d),
+                  id   = idFn.call(sett,datum)
                   yVal = yFn.call(sett, datum),
                   hVal = heightFn.call(sett, datum),
                   y0 = y(0);
 
                 d3.select(this)
                   .transition(transition)
+                  .attr("id", id)
                   .attr("y", yVal < y0 ? yVal: y0)
                   .attr("height", hVal);
               });
@@ -161,12 +163,14 @@ this.barChart = function(svg, settings, data) {
             .attr("class", barClassFn.bind(sett))
             .each(function(d) {
               var datum = getDatum.call(sett, d),
+                id   = idFn.call(sett,datum)
                 yVal = yFn.call(sett, datum),
                 hVal = heightFn.call(sett, datum),
                 y0 = y(0);
 
               d3.select(this)
                 .transition(transition)
+                .attr("id", id)
                 .attr("y", yVal < y0 ? yVal: y0)
                 .attr("height", hVal);
             });
@@ -222,6 +226,9 @@ this.barChart = function(svg, settings, data) {
         },
         yFn = function(d) {
           return y(sett.y.getValue.call(sett, d));
+        },
+        idFn = function(d) {
+          return sett.z.getId.call(sett, d);
         },
         heightFn = function() {
           var yVal = yFn.apply(this, arguments);
