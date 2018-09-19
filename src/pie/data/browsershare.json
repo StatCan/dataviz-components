@@ -1,0 +1,34 @@
+
+{
+  "date": "2017-07",
+  "shares": [
+    {
+      "browser": "chrome",
+      "share": 59.69
+    },
+    {
+      "browser": "safari",
+      "share": 13.85
+    },
+    {
+      "browser": "uc",
+      "share": 7.03
+    },
+    {
+      "browser": "firefox",
+      "share": 5.02
+    },
+    {
+      "browser": "opera",
+      "share": 3.35
+    },
+    {
+      "browser": "ie",
+      "share": 3.01
+    },
+    {
+      "browser": "unknown",
+      "share": 8.05
+    }
+  ]
+}

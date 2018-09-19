@@ -1,0 +1,27 @@
+.chrome path {
+  fill: #4cb749
+}
+
+.safari path {
+  fill: #448aff
+}
+
+.uc path {
+  fill: #ffa11a;
+}
+
+.firefox path {
+  fill: #fd4e21;
+}
+
+.opera path {
+  fill: #fa192b
+}
+
+.ie path {
+  fill: #18bcef
+}
+
+.unknown path {
+  fill: #999;
+}
