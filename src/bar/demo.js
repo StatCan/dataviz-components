@@ -37,11 +37,14 @@ i18n.load(["i18n"], function() {
     },
     x: {
       label: i18next.t("x_label", {ns: rootI18nNs}),
-      getValue: function(d) {
+      getId: function(d) {
         return d.region;
       },
+      getValue: function() {
+        return this.x.getId.apply(this, arguments);
+      },
       getClass: function() {
-        return this.x.getValue.apply(this, arguments);
+        return this.x.getId.apply(this, arguments);
       },
       getTickText: function(val) {
         return i18next.t(val, {ns: rootI18nNs});

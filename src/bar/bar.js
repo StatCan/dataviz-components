@@ -98,7 +98,7 @@ this.barChart = function(svg, settings, data) {
           return cl;
         },
         grpTransform = function() {
-          return "translate(" + x0(sett.x.getValue.apply(this,arguments)) + ",0)";
+          return "translate(" + x0(sett.x.getValue.apply(sett, arguments)) + ",0)";
         },
         barClassFn = function(d,i){
           var cl = "bar bar" + (i + 1);
@@ -137,40 +137,40 @@ this.barChart = function(svg, settings, data) {
           bars
             .enter()
             .append("rect")
-              .attr("x", xFn.bind(sett))
+              .attr("x", xFn)
               .attr("width", x1.bandwidth())
               .attr("y", y(0))
               .attr("height", 0)
               .attr("class", barClassFn.bind(sett))
               .each(function(d) {
                 var datum = getDatum.call(sett, d),
-                  id   = idFn.call(sett,datum)
-                  yVal = yFn.call(sett, datum),
-                  hVal = heightFn.call(sett, datum),
+                  id = zIdFn(d) + "_" + xIdFn(datum),
+                  yVal = yFn(datum),
+                  hVal = heightFn(datum),
                   y0 = y(0);
 
                 d3.select(this)
-                  .transition(transition)
                   .attr("id", id)
+                  .transition(transition)
                   .attr("y", yVal < y0 ? yVal: y0)
                   .attr("height", hVal);
               });
 
 
           bars
-            .attr("x", xFn.bind(sett))
+            .attr("x", xFn)
             .attr("width", x1.bandwidth())
             .attr("class", barClassFn.bind(sett))
             .each(function(d) {
               var datum = getDatum.call(sett, d),
-                id   = idFn.call(sett,datum)
-                yVal = yFn.call(sett, datum),
-                hVal = heightFn.call(sett, datum),
+                id = zIdFn(d) + "_" + xIdFn(datum),
+                yVal = yFn(datum),
+                hVal = heightFn(datum),
                 y0 = y(0);
 
               d3.select(this)
-                .transition(transition)
                 .attr("id", id)
+                .transition(transition)
                 .attr("y", yVal < y0 ? yVal: y0)
                 .attr("height", hVal);
             });
@@ -198,7 +198,7 @@ this.barChart = function(svg, settings, data) {
                 .attr("class", "value")
                 .each(function(d) {
                   var datum = getDatum.call(sett, d),
-                    yVal = yFn.call(sett, datum);
+                    yVal = yFn(datum);
 
                   d3.select(this)
                     .attr("y", yVal)
@@ -209,7 +209,7 @@ this.barChart = function(svg, settings, data) {
             .attr("x", valuesX)
             .each(function(d) {
               var datum = getDatum.call(sett, d),
-                yVal = yFn.call(sett, datum);
+                yVal = yFn(datum);
 
               d3.select(this)
                 .transition(transition)
@@ -222,14 +222,13 @@ this.barChart = function(svg, settings, data) {
               .remove();
         },
         xFn = function() {
-          return x1(sett.z.getId.apply(this, arguments));
+          return x1(sett.z.getId.apply(sett, arguments));
         },
         yFn = function(d) {
           return y(sett.y.getValue.call(sett, d));
         },
-        idFn = function(d) {
-          return sett.z.getId.call(sett, d);
-        },
+        xIdFn = sett.x.getId.bind(sett),
+        zIdFn = sett.z.getId.bind(sett),
         heightFn = function() {
           var yVal = yFn.apply(this, arguments);
 
@@ -263,7 +262,7 @@ this.barChart = function(svg, settings, data) {
         .data(xDomain.map(function(x) {
 
           for(var i = 0; i < flatData.length; i++) {
-            if (sett.x.getValue(flatData[i]) === x)
+            if (sett.x.getValue.call(sett, flatData[i]) === x)
               return flatData[i];
           }
         }));
