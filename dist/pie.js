@@ -6,6 +6,9 @@ var defaults = {
     bottom: 2,
     left: 2
   },
+  sort: function(a, b) {
+    return this.getId(a).localeCompare(this.getId(b));
+  },
   innerRadius: 0,
   padding: 0.0008,
   aspectRatio: 16 / 9,
@@ -49,7 +52,9 @@ this.pieChart = function(svg, settings, data) {
           .outerRadius(outerRadius),
         padAngle = typeof sett.padding === "function" ? sett.padding.bind(sett) : sett.padding || 0,
         valueFn = sett.getValue ? sett.getValue.bind(sett) : null,
-        idFn = sett.getId ? sett.getId.bind(sett) : null,
+        idFn = sett.getId ? function(d, i, sel) {
+          return sett.getId.call(sett, d.data, i, sel);
+        } : null,
         textFn = sett.getText ? sett.getText.bind(sett) : null,
         textRedrawFn = function() {
           d3.select(this).select("textPath").text(truncateText);
@@ -120,6 +125,7 @@ this.pieChart = function(svg, settings, data) {
         },
         pie = d3.pie()
           .value(valueFn)
+          .sort(sett.sort.bind(sett))
           .padAngle(padAngle),
         arcs;
 
@@ -175,6 +181,24 @@ this.pieChart = function(svg, settings, data) {
             .attrTween("d", arcTween);
 
           parent.on("end", textRedrawFn);
+        });
+
+      arcs
+        .exit()
+        .transition()
+        .each(function() {
+          var parent = getTransition(d3.select(this).transition());
+
+          parent.select("text textPath")
+            .text(null);
+
+          parent
+            .select("path")
+            .attrTween("d", arcTween);
+
+          parent.on("end", function() {
+            d3.select(this).remove();
+          });
         });
     },
     rtnObj, process;
