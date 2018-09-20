@@ -9,7 +9,7 @@ var settings = {
       return data.shares;
     },
     getId: function(d) {
-      return d.data.browser;
+      return d.browser;
     },
     getClass: function(d) {
       return d.data.browser;
