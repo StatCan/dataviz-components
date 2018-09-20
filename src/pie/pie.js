@@ -176,6 +176,24 @@ this.pieChart = function(svg, settings, data) {
 
           parent.on("end", textRedrawFn);
         });
+
+      arcs
+        .exit()
+        .transition()
+        .each(function() {
+          var parent = getTransition(d3.select(this).transition());
+
+          parent.select("text textPath")
+            .text(null);
+
+          parent
+            .select("path")
+            .attrTween("d", arcTween);
+
+          parent.on("end", function() {
+            d3.select(this).remove();
+          });
+        });
     },
     rtnObj, process;
 
