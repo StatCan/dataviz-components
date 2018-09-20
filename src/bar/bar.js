@@ -265,7 +265,7 @@ this.barChart = function(svg, settings, data) {
             if (sett.x.getValue.call(sett, flatData[i]) === x)
               return flatData[i];
           }
-        }));
+        }), sett.x.getId.bind(sett));
 
       barGroups
         .enter()
@@ -275,6 +275,7 @@ this.barChart = function(svg, settings, data) {
           .each(barsFn);
 
       barGroups
+        .attr("class", grpClassFn)
         .transition(transition)
         .attr("transform", grpTransform)
         .each(barsFn);
