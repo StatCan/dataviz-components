@@ -144,10 +144,10 @@ this.pieChart = function(svg, settings, data) {
         .append("g")
         .attr("id", idFn)
         .attr("class", classFn)
-        .each(function(d, index) {
+        .each(function(d) {
           var parent = d3.select(this),
             arcId = function() {
-              return svg.attr("id") + "arc" + index;
+              return parent.attr("id") + "_arc";
             };
 
           this._current = d;
