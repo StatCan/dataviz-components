@@ -63,6 +63,7 @@ this.sunburstChart = function(svg, settings, data) {
               padding = typeof sett.padding === "function" ? sett.padding.call(sett, d) : sett.padding;
             return padding * zoom;
           } : null),
+        childrenFn = sett.getChildren ? sett.getChildren.bind(sett) : null,
         valueFn = sett.getValue ? sett.getValue.bind(sett) : null,
         idFn = sett.getId ? sett.getId.bind(sett) : null,
         textFn = sett.getText ? sett.getText.bind(sett) : null,
@@ -183,7 +184,7 @@ this.sunburstChart = function(svg, settings, data) {
         },
         partition = d3.partition(),
         root = partition(
-          d3.hierarchy(filteredData)
+          d3.hierarchy(filteredData, childrenFn)
             .sum(valueFn)
         ),
         getZoomDatum = function() {
