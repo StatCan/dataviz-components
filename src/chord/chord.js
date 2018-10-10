@@ -251,8 +251,8 @@ this.chordChart = function(svg, settings, data) {
 
   process = function() {
     draw.apply(rtnObj);
-    if (mergedSettings.datatable === false) return;
     d3.stcExt.addIEShim(svg, outerHeight, outerWidth);
+    if (mergedSettings.datatable === false) return;
   };
   if (data === undefined) {
     d3.json(mergedSettings.url, function(error, xhr) {
