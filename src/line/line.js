@@ -113,7 +113,7 @@ this.lineChart = function(svg, settings, data) {
       lines
         .exit()
           .remove();
-      labels = dataLayer.selectAll(".label")
+      labels = dataLayer.selectAll(".line-label")
         .data(
           function() {
             if (typeof showLabel === "function") {
@@ -135,7 +135,6 @@ this.lineChart = function(svg, settings, data) {
             .attr("fill", "#000")
             .attr("x", labelX)
             .attr("y", labelY)
-
             .attr("text-anchor", "end");
 
       labels
