@@ -38,11 +38,11 @@ this.lineChart = function(svg, settings, data) {
     chartInner = svg.select("g"),
     dataLayer = chartInner.select(".data"),
     line = d3.line()
-      .x(function(d) {
-        return x(mergedSettings.x.getValue.call(mergedSettings, d));
+      .x(function() {
+        return x(mergedSettings.x.getValue.apply(mergedSettings, arguments));
       })
-      .y(function(d) {
-        return y(mergedSettings.y.getValue.call(mergedSettings, d));
+      .y(function() {
+        return y(mergedSettings.y.getValue.apply(mergedSettings, arguments));
       }),
     transition = d3.transition()
       .duration(1000),
