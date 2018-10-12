@@ -76,13 +76,13 @@ this.lineChart = function(svg, settings, data) {
           var cl = "dline dline" + (i + 1);
 
           if (sett.z && sett.z.getClass && typeof sett.z.getClass === "function") {
-            cl += " " + sett.z.getClass.call(sett, d);
+            cl += " " + sett.z.getClass.apply(sett, arguments);
           }
 
           return cl;
         },
-        lineFn = function(d) {
-          return line(sett.z.getDataPoints.call(sett, d));
+        lineFn = function() {
+          return line(sett.z.getDataPoints.apply(sett, arguments));
         },
         lines, labels;
 
