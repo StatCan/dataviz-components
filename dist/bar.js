@@ -379,4 +379,11 @@ this.barChart = function(svg, settings, data) {
   return rtnObj;
 };
 
+// TODO: Remove when switched to ES6
+if (!Math.sign) {
+  Math.sign = function(x) {
+    return ((x > 0) - (x < 0)) || +x;
+  };
+}
+
 })(jQuery.extend, jQuery);
