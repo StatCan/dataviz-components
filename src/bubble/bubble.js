@@ -19,7 +19,7 @@ this.bubbleChart = function(svg, settings, data) {
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
     pack = d3.pack()
       .size([innerWidth, innerHeight]),
-    chartInner = svg.select("g"),
+    chartInner = svg.select("g.margin-offset"),
     dataLayer = chartInner.select(".data"),
     transition = d3.transition()
       .duration(1000),
@@ -145,6 +145,7 @@ this.bubbleChart = function(svg, settings, data) {
 
   if (chartInner.empty()) {
     chartInner = svg.append("g")
+      .attr("class", "margin-offset")
       .attr("transform", "translate(" + mergedSettings.margin.left + "," + mergedSettings.margin.top + ")");
   }
 

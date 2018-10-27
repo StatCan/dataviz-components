@@ -18,7 +18,7 @@ this.chordChart = function(svg, settings, data) {
     outerHeight = Math.ceil(outerWidth / mergedSettings.aspectRatio),
     innerHeight = mergedSettings.innerHeight = outerHeight - mergedSettings.margin.top - mergedSettings.margin.bottom,
     innerWidth = mergedSettings.innerWidth = outerWidth - mergedSettings.margin.left - mergedSettings.margin.right,
-    chartInner = svg.select("g"),
+    chartInner = svg.select("g.margin-offset"),
     dataLayer = chartInner.select(".data"),
     transition = d3.transition()
       .duration(1000),
@@ -246,6 +246,7 @@ this.chordChart = function(svg, settings, data) {
 
   if (chartInner.empty()) {
     chartInner = svg.append("g")
+      .attr("class", "margin-offset")
       .attr("transform", "translate(" + mergedSettings.margin.left + "," + mergedSettings.margin.top + ")");
   }
 
