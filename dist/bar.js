@@ -118,6 +118,16 @@ this.barChart = function(svg, settings, data) {
                     return sett.x.getValue.call(sett, d) === xVal;
                   })[0];
             },
+            labelsOffset = function(d) {
+              var datum = getDatum.call(sett, d),
+                val = sett.y.getValue.call(sett, datum);
+              switch(Math.sign(val)) {
+              case 1:
+                return "-0.5em";
+              case -1:
+                return "1.5em";
+              }
+            },
             bars = group.selectAll(".bar")
               .data(filteredData, sett.z.getId.bind(sett)),
             values = group.selectAll(".value")
@@ -182,16 +192,7 @@ this.barChart = function(svg, settings, data) {
               .append("text")
                 .attr("x", valuesX)
                 .attr("aria-hidden", "true")
-                .attr("dy", function(d) {
-                  var datum = getDatum.call(sett, d),
-                    val = sett.y.getValue.call(sett, datum);
-                  switch(Math.sign(val)) {
-                  case 1:
-                    return "-0.5em";
-                  case -1:
-                    return "1.5em";
-                  }
-                })
+                .attr("dy", labelsOffset)
                 .attr("text-anchor", "middle")
                 .attr("class", "value")
                 .each(function(d) {
@@ -212,6 +213,7 @@ this.barChart = function(svg, settings, data) {
               d3.select(this)
                 .transition(transition)
                 .attr("y", yVal)
+                .attr("dy", labelsOffset)
                 .text(sett.y.getText.call(sett, datum));
             });
 
