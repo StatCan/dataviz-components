@@ -28,16 +28,21 @@ var defaults = {
     getDomain: function(data) {
       var min = d3.min(data, this.y.getValue.bind(this)),
         max = d3.max(data, this.y.getValue.bind(this)),
-        padding = (max - min) * .05;
+        padding;
+
+      if (min > 0) min = 0;
+      if (max < 0) max = 0;
+
+      padding = (max - min) * .06
 
       if (this.showValues) {
-        min -= padding;
-        max += padding;
+        if (min < 0 ) min -= padding;
+        if (max > 0 ) max += padding;
       }
 
       return [
-        min > 0 ? 0 : min,
-        max < 0 ? 0 : max
+        min,
+        max
       ];
     }
   },
