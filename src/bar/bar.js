@@ -129,9 +129,7 @@ this.barChart = function(svg, settings, data) {
                 } else if (showValue !== true) {
                   return[];
                 }
-                return filteredData.filter(function(d) {
-                  return sett.y.getValue.call(sett, getDatum.call(sett, d)) !== 0;
-                });
+                return filteredData;
               }, sett.z.getId.bind(sett));
 
           bars
