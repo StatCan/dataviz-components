@@ -33,7 +33,7 @@ var defaults = {
       if (min > 0) min = 0;
       if (max < 0) max = 0;
 
-      padding = (max - min) * .06
+      padding = (max - min) * .06;
 
       if (this.showValues) {
         if (min < 0 ) min -= padding;
@@ -271,7 +271,7 @@ this.barChart = function(svg, settings, data) {
               return flatData[i];
           }
         }).filter(function(d) {
-          return d !== undefined
+          return d !== undefined;
         }), sett.x.getId.bind(sett));
 
       barGroups
