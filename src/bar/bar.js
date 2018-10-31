@@ -270,6 +270,8 @@ this.barChart = function(svg, settings, data) {
             if (sett.x.getValue.call(sett, flatData[i]) === x)
               return flatData[i];
           }
+        }).filter(function(d) {
+          return d !== undefined
         }), sett.x.getId.bind(sett));
 
       barGroups
