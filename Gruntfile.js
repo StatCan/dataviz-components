@@ -5,7 +5,7 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     eslint: {
-      src: ["src/*.js"]
+      src: ["src/**/*.js"]
     },
 
     clean: {
