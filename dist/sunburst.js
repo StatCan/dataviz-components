@@ -184,7 +184,9 @@ this.sunburstChart = function(svg, settings, data) {
         },
         partition = d3.partition(),
         root = partition(
-          d3.hierarchy(filteredData, childrenFn)
+          (
+            filteredData instanceof d3.hierarchy ? filteredData : d3.hierarchy(filteredData, childrenFn)
+          )
             .sum(valueFn)
         ),
         getZoomDatum = function() {
