@@ -105,9 +105,9 @@ this.areaChart = function(svg, settings, data) {
         .exit()
           .remove();
 
-      labels = dataLayer.selectAll(".label");
+      labels = dataLayer.selectAll(".area-label")
+        .data(stackData, sett.z.getId.bind(sett));
       labels
-        .data(stackData)
         .enter()
         .append("text")
           .text(sett.z.getText.bind(sett))
