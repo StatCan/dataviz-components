@@ -86,6 +86,7 @@ this.barChart = function(svg, settings, data) {
         })),
         xAxisObj = chartInner.select(".x.axis"),
         yAxisObj = chartInner.select(".y.axis"),
+        zeroLine = chartInner.select(".zero-line"),
         showValue = sett.showValues,
         valuesX = function() {
           return xFn.apply(this, arguments) + x1.bandwidth() / 2;
@@ -125,6 +126,7 @@ this.barChart = function(svg, settings, data) {
                 val = sett.y.getValue.call(sett, datum);
               switch(Math.sign(val)) {
               case 1:
+              case 0:
                 return "-0.5em";
               case -1:
                 return "1.5em";
@@ -287,6 +289,18 @@ this.barChart = function(svg, settings, data) {
       barGroups
         .exit()
           .remove();
+
+      if (zeroLine.empty()) {
+        zeroLine = chartInner.append("line")
+          .attr("class", "zero-line")
+          .attr("stroke", "#000")
+          .attr("x1", 0)
+          .attr("x2", innerWidth);
+      }
+      zeroLine
+        .transition(transition)
+        .attr("y1", y(0) + .5)
+        .attr("y2", y(0) + .5);
 
       if (xAxisObj.empty()) {
         xAxisObj = chartInner.append("g")
