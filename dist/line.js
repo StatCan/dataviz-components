@@ -107,6 +107,7 @@ this.lineChart = function(svg, settings, data) {
           .attr("d", lineFn);
 
       lines
+        .attr("class", classFn)
         .transition(transition)
         .attr("d", lineFn);
 
