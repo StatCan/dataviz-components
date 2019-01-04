@@ -323,6 +323,7 @@ this.barChart = function(svg, settings, data) {
         d3.axisBottom(x0)
           .ticks(sett.x.ticks)
           .tickFormat(sett.x.getTickText ? sett.x.getTickText.bind(sett) : null)
+          .tickSizeOuter(sett.x.outerTicks === false ? 0 : 6)
       );
 
       if (yAxisObj.empty()) {
@@ -345,6 +346,7 @@ this.barChart = function(svg, settings, data) {
         d3.axisLeft(y)
           .ticks(sett.y.ticks)
           .tickFormat(sett.y.getTickText ? sett.y.getTickText.bind(sett) : null)
+          .tickSizeOuter(sett.x.outerTicks === false ? 0 : 6)
       );
     },
     drawTable = function() {
