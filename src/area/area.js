@@ -147,6 +147,7 @@ this.areaChart = function(svg, settings, data) {
       xAxisObj.call(
         d3.axisBottom(x)
           .ticks(mergedSettings.x.ticks)
+          .tickSizeOuter(sett.x.tickSizeOuter ? sett.x.tickSizeOuter : null)
           .tickFormat(sett.x.getTickText ? sett.x.getTickText.bind(sett) : null)
       );
 
@@ -169,6 +170,7 @@ this.areaChart = function(svg, settings, data) {
       yAxisObj.call(
         d3.axisLeft(y)
           .ticks(mergedSettings.y.ticks)
+          .tickSizeOuter(sett.y.tickSizeOuter ? sett.y.tickSizeOuter : null)
           .tickFormat(sett.y.getTickText ? sett.y.getTickText.bind(sett) : null)
         );
     },
